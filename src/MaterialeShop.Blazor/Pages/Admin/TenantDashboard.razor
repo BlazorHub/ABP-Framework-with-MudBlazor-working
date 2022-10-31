@@ -1,6 +1,7 @@
 ﻿@page "/Dashboard"
-@attribute [Authorize()]
+@attribute [Authorize(MaterialeShopPermissions.Dashboard.Host)]
 @using Microsoft.AspNetCore.Authorization
+@using Permissions
 @using Volo.Abp.AuditLogging.Blazor.Pages.Shared.ErrorRateWidget
 @using Volo.Abp.AuditLogging.Blazor.Pages.Shared.AverageExecutionDurationPerDayWidget
 @using Volo.Abp.AspNetCore.Components.Web.Theming.Layout
