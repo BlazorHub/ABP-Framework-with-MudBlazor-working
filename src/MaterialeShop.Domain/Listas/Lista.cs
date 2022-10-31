@@ -1,3 +1,4 @@
+using MaterialeShop.Enderecos;
 using System;
 using System.Linq;
 using System.Collections.Generic;
@@ -15,18 +16,20 @@ namespace MaterialeShop.Listas
     {
         [NotNull]
         public virtual string Titulo { get; set; }
+        public Guid? EnderecoId { get; set; }
 
         public Lista()
         {
 
         }
 
-        public Lista(Guid id, string titulo)
+        public Lista(Guid id, Guid? enderecoId, string titulo)
         {
 
             Id = id;
             Check.NotNull(titulo, nameof(titulo));
             Titulo = titulo;
+            EnderecoId = enderecoId;
         }
 
     }

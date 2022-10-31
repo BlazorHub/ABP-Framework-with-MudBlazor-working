@@ -1,3 +1,4 @@
+using MaterialeShop.Shared;
 using System;
 using System.Threading.Tasks;
 using Volo.Abp.Application.Dtos;
@@ -9,9 +10,13 @@ namespace MaterialeShop.Listas
 {
     public interface IListasAppService : IApplicationService
     {
-        Task<PagedResultDto<ListaDto>> GetListAsync(GetListasInput input);
+        Task<PagedResultDto<ListaWithNavigationPropertiesDto>> GetListAsync(GetListasInput input);
+
+        Task<ListaWithNavigationPropertiesDto> GetWithNavigationPropertiesAsync(Guid id);
 
         Task<ListaDto> GetAsync(Guid id);
+
+        Task<PagedResultDto<LookupDto<Guid?>>> GetEnderecoLookupAsync(LookupRequestDto input);
 
         Task DeleteAsync(Guid id);
 

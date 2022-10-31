@@ -25,13 +25,13 @@ namespace MaterialeShop.Listas
             {
                 // Act
                 var result = await _listaRepository.GetListAsync(
-                    titulo: "c5"
+                    titulo: "9b"
                 );
 
                 // Assert
                 result.Count.ShouldBe(1);
                 result.FirstOrDefault().ShouldNotBe(null);
-                result.First().Id.ShouldBe(Guid.Parse("b3dd3f22-eaa8-44b6-8306-aa1e77c0cf00"));
+                result.First().Id.ShouldBe(Guid.Parse("e34ed866-71ee-4bce-afe1-c104dd4a482d"));
             });
         }
 
@@ -43,7 +43,7 @@ namespace MaterialeShop.Listas
             {
                 // Act
                 var result = await _listaRepository.GetCountAsync(
-                    titulo: "98"
+                    titulo: "52"
                 );
 
                 // Assert

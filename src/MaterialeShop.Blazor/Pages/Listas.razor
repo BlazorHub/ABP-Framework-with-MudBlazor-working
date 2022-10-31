@@ -53,7 +53,7 @@
 @* ************************* DATA GRID ************************* *@
 <Card>
     <CardBody>
-        <DataGrid TItem="ListaDto"
+        <DataGrid TItem="ListaWithNavigationPropertiesDto"
                   Data="ListaList"
                   ReadData="OnDataGridReadAsync"
                   TotalItems="TotalCount"
@@ -61,14 +61,14 @@
                   Responsive="true"
                   PageSize="PageSize">
             <DataGridColumns>
-                <DataGridEntityActionsColumn TItem="ListaDto" @ref="@EntityActionsColumn">
+                <DataGridEntityActionsColumn TItem="ListaWithNavigationPropertiesDto" @ref="@EntityActionsColumn">
                     <DisplayTemplate>
-                        <EntityActions TItem="ListaDto" EntityActionsColumn="@EntityActionsColumn">
-                            <EntityAction TItem="ListaDto"
+                        <EntityActions TItem="ListaWithNavigationPropertiesDto" EntityActionsColumn="@EntityActionsColumn">
+                            <EntityAction TItem="ListaWithNavigationPropertiesDto"
                                           Visible="@CanEditLista"
                                           Clicked="async () => await OpenEditListaModalAsync(context)"
                                           Text="@L["Edit"]"></EntityAction>
-                            <EntityAction TItem="ListaDto"
+                            <EntityAction TItem="ListaWithNavigationPropertiesDto"
                                           Visible="@CanDeleteLista"
                                           Clicked="() => DeleteListaAsync(context)"
                                           ConfirmationMessage="@(()=> L["DeleteConfirmationMessage"])"
@@ -77,9 +77,14 @@
                     </DisplayTemplate>
                 </DataGridEntityActionsColumn>
                
-              <DataGridColumn TItem="ListaDto"
-                      Field="Titulo"
+              <DataGridColumn TItem="ListaWithNavigationPropertiesDto"
+                      Field="Lista.Titulo"
                       Caption="@L["Titulo"]">
+              </DataGridColumn>
+
+              <DataGridColumn TItem="ListaWithNavigationPropertiesDto"
+                      Field="Endereco.EnderecoCompleto"
+                      Caption="@L["Endereco"]">
               </DataGridColumn>
 
             </DataGridColumns>
@@ -112,6 +117,20 @@
                             </TextEdit>
                         </Field>
                     </Validation>
+
+
+                    <Field>
+                        <FieldLabel>@L["Endereco"]</FieldLabel>
+                        <Select TValue="Guid?" @bind-SelectedValue="@NewLista.EnderecoId">
+                            <SelectItem TValue="Guid?" Value="null"></SelectItem>
+                            @foreach (var endereco in EnderecosNullable)
+                            {
+                                <SelectItem TValue="Guid?" Value="@endereco.Id">
+                                    @endereco.DisplayName
+                                </SelectItem>
+                            }
+                        </Select>
+                    </Field>
 
 
                     
@@ -154,6 +173,20 @@
                             </TextEdit>
                         </Field>
                     </Validation>
+
+
+                    <Field>
+                        <FieldLabel>@L["Endereco"]</FieldLabel>
+                        <Select TValue="Guid?" @bind-SelectedValue="@EditingLista.EnderecoId">
+                            <SelectItem TValue="Guid?" Value="null"></SelectItem>
+                            @foreach (var endereco in EnderecosNullable)
+                            {
+                                <SelectItem TValue="Guid?" Value="@endereco.Id">
+                                    @endereco.DisplayName
+                                </SelectItem>
+                            }
+                        </Select>
+                    </Field>
 
 
                     

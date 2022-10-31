@@ -18,7 +18,7 @@ namespace MaterialeShop.Blazor.Pages
     {
         protected List<Volo.Abp.BlazoriseUI.BreadcrumbItem> BreadcrumbItems = new List<Volo.Abp.BlazoriseUI.BreadcrumbItem>();
         protected PageToolbar Toolbar {get;} = new PageToolbar();
-        private IReadOnlyList<ListaDto> ListaList { get; set; }
+        private IReadOnlyList<ListaWithNavigationPropertiesDto> ListaList { get; set; }
         private int PageSize { get; } = LimitedResultRequestDto.DefaultMaxResultCount;
         private int CurrentPage { get; set; } = 1;
         private string CurrentSorting { get; set; }
@@ -34,10 +34,11 @@ namespace MaterialeShop.Blazor.Pages
         private Modal CreateListaModal { get; set; }
         private Modal EditListaModal { get; set; }
         private GetListasInput Filter { get; set; }
-        private DataGridEntityActionsColumn<ListaDto> EntityActionsColumn { get; set; }
+        private DataGridEntityActionsColumn<ListaWithNavigationPropertiesDto> EntityActionsColumn { get; set; }
         protected string SelectedCreateTab = "lista-create-tab";
         protected string SelectedEditTab = "lista-edit-tab";
-        
+        private IReadOnlyList<LookupDto<Guid?>> EnderecosNullable { get; set; } = new List<LookupDto<Guid?>>();
+
         public Listas()
         {
             NewLista = new ListaCreateDto();
@@ -55,6 +56,9 @@ namespace MaterialeShop.Blazor.Pages
             await SetToolbarItemsAsync();
             await SetBreadcrumbItemsAsync();
             await SetPermissionsAsync();
+            await GetNullableEnderecoLookupAsync();
+
+
         }
 
         protected virtual ValueTask SetBreadcrumbItemsAsync()
@@ -110,7 +114,7 @@ namespace MaterialeShop.Blazor.Pages
             NavigationManager.NavigateTo($"{remoteService.BaseUrl.EnsureEndsWith('/')}api/app/listas/as-excel-file?DownloadToken={token}&FilterText={Filter.FilterText}", forceLoad: true);
         }
 
-        private async Task OnDataGridReadAsync(DataGridReadDataEventArgs<ListaDto> e)
+        private async Task OnDataGridReadAsync(DataGridReadDataEventArgs<ListaWithNavigationPropertiesDto> e)
         {
             CurrentSorting = e.Columns
                 .Where(c => c.SortDirection != SortDirection.Default)
@@ -140,19 +144,19 @@ namespace MaterialeShop.Blazor.Pages
             await CreateListaModal.Hide();
         }
 
-        private async Task OpenEditListaModalAsync(ListaDto input)
+        private async Task OpenEditListaModalAsync(ListaWithNavigationPropertiesDto input)
         {
-            var lista = await ListasAppService.GetAsync(input.Id);
+            var lista = await ListasAppService.GetWithNavigationPropertiesAsync(input.Lista.Id);
             
-            EditingListaId = lista.Id;
-            EditingLista = ObjectMapper.Map<ListaDto, ListaUpdateDto>(lista);
+            EditingListaId = lista.Lista.Id;
+            EditingLista = ObjectMapper.Map<ListaDto, ListaUpdateDto>(lista.Lista);
             await EditingListaValidations.ClearAll();
             await EditListaModal.Show();
         }
 
-        private async Task DeleteListaAsync(ListaDto input)
+        private async Task DeleteListaAsync(ListaWithNavigationPropertiesDto input)
         {
-            await ListasAppService.DeleteAsync(input.Id);
+            await ListasAppService.DeleteAsync(input.Lista.Id);
             await GetListasAsync();
         }
 
@@ -209,6 +213,12 @@ namespace MaterialeShop.Blazor.Pages
             SelectedEditTab = name;
         }
         
+
+        private async Task GetNullableEnderecoLookupAsync(string newValue = null)
+        {
+            EnderecosNullable = (await ListasAppService.GetEnderecoLookupAsync(new LookupRequestDto { Filter = newValue })).Items;
+        }
+
 
     }
 }

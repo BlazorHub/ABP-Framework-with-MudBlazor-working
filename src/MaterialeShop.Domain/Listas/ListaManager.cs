@@ -19,11 +19,11 @@ namespace MaterialeShop.Listas
         }
 
         public async Task<Lista> CreateAsync(
-        string titulo)
+        Guid? enderecoId, string titulo)
         {
             var lista = new Lista(
              GuidGenerator.Create(),
-             titulo
+             enderecoId, titulo
              );
 
             return await _listaRepository.InsertAsync(lista);
@@ -31,7 +31,7 @@ namespace MaterialeShop.Listas
 
         public async Task<Lista> UpdateAsync(
             Guid id,
-            string titulo, [CanBeNull] string concurrencyStamp = null
+            Guid? enderecoId, string titulo, [CanBeNull] string concurrencyStamp = null
         )
         {
             var queryable = await _listaRepository.GetQueryableAsync();
@@ -39,6 +39,7 @@ namespace MaterialeShop.Listas
 
             var lista = await AsyncExecuter.FirstOrDefaultAsync(query);
 
+            lista.EnderecoId = enderecoId;
             lista.Titulo = titulo;
 
             lista.SetConcurrencyStampIfNotNull(concurrencyStamp);

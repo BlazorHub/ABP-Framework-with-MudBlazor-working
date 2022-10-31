@@ -1,3 +1,4 @@
+using MaterialeShop.Enderecos;
 using System;
 using System.Threading.Tasks;
 using Volo.Abp.Data;
@@ -12,12 +13,13 @@ namespace MaterialeShop.Listas
         private bool IsSeeded = false;
         private readonly IListaRepository _listaRepository;
         private readonly IUnitOfWorkManager _unitOfWorkManager;
+        private readonly EnderecosDataSeedContributor _enderecosDataSeedContributor;
 
-        public ListasDataSeedContributor(IListaRepository listaRepository, IUnitOfWorkManager unitOfWorkManager)
+        public ListasDataSeedContributor(IListaRepository listaRepository, IUnitOfWorkManager unitOfWorkManager, EnderecosDataSeedContributor enderecosDataSeedContributor)
         {
             _listaRepository = listaRepository;
             _unitOfWorkManager = unitOfWorkManager;
-
+            _enderecosDataSeedContributor = enderecosDataSeedContributor;
         }
 
         public async Task SeedAsync(DataSeedContext context)
@@ -27,16 +29,20 @@ namespace MaterialeShop.Listas
                 return;
             }
 
+            await _enderecosDataSeedContributor.SeedAsync(context);
+
             await _listaRepository.InsertAsync(new Lista
             (
-                id: Guid.Parse("b3dd3f22-eaa8-44b6-8306-aa1e77c0cf00"),
-                titulo: "c5"
+                id: Guid.Parse("e34ed866-71ee-4bce-afe1-c104dd4a482d"),
+                titulo: "9b",
+                enderecoId: null
             ));
 
             await _listaRepository.InsertAsync(new Lista
             (
-                id: Guid.Parse("ce235555-ad62-4b61-8f7f-2f45117f8d8d"),
-                titulo: "98"
+                id: Guid.Parse("e04eb239-c7f3-454e-9149-f5c194a2546b"),
+                titulo: "52",
+                enderecoId: null
             ));
 
             await _unitOfWorkManager.Current.SaveChangesAsync();

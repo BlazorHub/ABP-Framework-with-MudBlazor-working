@@ -1,3 +1,5 @@
+using MaterialeShop.Shared;
+using MaterialeShop.Enderecos;
 using System;
 using System.IO;
 using System.Linq;
@@ -27,29 +29,52 @@ namespace MaterialeShop.Listas
         private readonly IDistributedCache<ListaExcelDownloadTokenCacheItem, string> _excelDownloadTokenCache;
         private readonly IListaRepository _listaRepository;
         private readonly ListaManager _listaManager;
+        private readonly IRepository<Endereco, Guid> _enderecoRepository;
 
-        public ListasAppService(IListaRepository listaRepository, ListaManager listaManager, IDistributedCache<ListaExcelDownloadTokenCacheItem, string> excelDownloadTokenCache)
+        public ListasAppService(IListaRepository listaRepository, ListaManager listaManager, IDistributedCache<ListaExcelDownloadTokenCacheItem, string> excelDownloadTokenCache, IRepository<Endereco, Guid> enderecoRepository)
         {
             _excelDownloadTokenCache = excelDownloadTokenCache;
             _listaRepository = listaRepository;
-            _listaManager = listaManager;
+            _listaManager = listaManager; _enderecoRepository = enderecoRepository;
         }
 
-        public virtual async Task<PagedResultDto<ListaDto>> GetListAsync(GetListasInput input)
+        public virtual async Task<PagedResultDto<ListaWithNavigationPropertiesDto>> GetListAsync(GetListasInput input)
         {
-            var totalCount = await _listaRepository.GetCountAsync(input.FilterText, input.Titulo);
-            var items = await _listaRepository.GetListAsync(input.FilterText, input.Titulo, input.Sorting, input.MaxResultCount, input.SkipCount);
+            var totalCount = await _listaRepository.GetCountAsync(input.FilterText, input.Titulo, input.EnderecoId);
+            var items = await _listaRepository.GetListWithNavigationPropertiesAsync(input.FilterText, input.Titulo, input.EnderecoId, input.Sorting, input.MaxResultCount, input.SkipCount);
 
-            return new PagedResultDto<ListaDto>
+            return new PagedResultDto<ListaWithNavigationPropertiesDto>
             {
                 TotalCount = totalCount,
-                Items = ObjectMapper.Map<List<Lista>, List<ListaDto>>(items)
+                Items = ObjectMapper.Map<List<ListaWithNavigationProperties>, List<ListaWithNavigationPropertiesDto>>(items)
             };
+        }
+
+        public virtual async Task<ListaWithNavigationPropertiesDto> GetWithNavigationPropertiesAsync(Guid id)
+        {
+            return ObjectMapper.Map<ListaWithNavigationProperties, ListaWithNavigationPropertiesDto>
+                (await _listaRepository.GetWithNavigationPropertiesAsync(id));
         }
 
         public virtual async Task<ListaDto> GetAsync(Guid id)
         {
             return ObjectMapper.Map<Lista, ListaDto>(await _listaRepository.GetAsync(id));
+        }
+
+        public virtual async Task<PagedResultDto<LookupDto<Guid?>>> GetEnderecoLookupAsync(LookupRequestDto input)
+        {
+            var query = (await _enderecoRepository.GetQueryableAsync())
+                .WhereIf(!string.IsNullOrWhiteSpace(input.Filter),
+                    x => x.EnderecoCompleto != null &&
+                         x.EnderecoCompleto.Contains(input.Filter));
+
+            var lookupData = await query.PageBy(input.SkipCount, input.MaxResultCount).ToDynamicListAsync<Endereco>();
+            var totalCount = query.Count();
+            return new PagedResultDto<LookupDto<Guid?>>
+            {
+                TotalCount = totalCount,
+                Items = ObjectMapper.Map<List<Endereco>, List<LookupDto<Guid?>>>(lookupData)
+            };
         }
 
         [Authorize(MaterialeShopPermissions.Listas.Delete)]
@@ -63,7 +88,7 @@ namespace MaterialeShop.Listas
         {
 
             var lista = await _listaManager.CreateAsync(
-            input.Titulo
+            input.EnderecoId, input.Titulo
             );
 
             return ObjectMapper.Map<Lista, ListaDto>(lista);
@@ -75,7 +100,7 @@ namespace MaterialeShop.Listas
 
             var lista = await _listaManager.UpdateAsync(
             id,
-            input.Titulo, input.ConcurrencyStamp
+            input.EnderecoId, input.Titulo, input.ConcurrencyStamp
             );
 
             return ObjectMapper.Map<Lista, ListaDto>(lista);

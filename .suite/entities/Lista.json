@@ -40,7 +40,23 @@
       "OrdinalIndex": 0
     }
   ],
-  "NavigationProperties": [],
+  "NavigationProperties": [
+    {
+      "EntityNameWithDuplicationNumber": "Endereco",
+      "EntitySetNameWithDuplicationNumber": "Enderecos",
+      "ReferencePropertyName": "Endereco",
+      "UiPickType": "Dropdown",
+      "IsRequired": false,
+      "Name": "EnderecoId",
+      "DisplayProperty": "EnderecoCompleto",
+      "Namespace": "MaterialeShop.Enderecos",
+      "EntityName": "Endereco",
+      "EntitySetName": "Enderecos",
+      "DtoNamespace": "MaterialeShop.Enderecos",
+      "DtoEntityName": "EnderecoDto",
+      "Type": "Guid"
+    }
+  ],
   "NavigationConnections": [],
   "PhysicalFileName": "Lista.json"
 }

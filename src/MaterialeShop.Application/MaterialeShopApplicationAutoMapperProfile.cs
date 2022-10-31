@@ -27,5 +27,8 @@ public class MaterialeShopApplicationAutoMapperProfile : Profile
 
         CreateMap<Endereco, EnderecoDto>();
         CreateMap<Endereco, EnderecoExcelDto>();
+
+        CreateMap<ListaWithNavigationProperties, ListaWithNavigationPropertiesDto>();
+        CreateMap<Endereco, LookupDto<Guid?>>().ForMember(dest => dest.DisplayName, opt => opt.MapFrom(src => src.EnderecoCompleto));
     }
 }

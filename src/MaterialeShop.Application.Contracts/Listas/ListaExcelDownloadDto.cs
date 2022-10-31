@@ -10,6 +10,7 @@ namespace MaterialeShop.Listas
         public string FilterText { get; set; }
 
         public string Titulo { get; set; }
+        public Guid? EnderecoId { get; set; }
 
         public ListaExcelDownloadDto()
         {

@@ -100,12 +100,6 @@ public class MaterialeShopDbContext :
         //});
         if (builder.IsHostDatabase())
         {
-            builder.Entity<Lista>(b =>
-{
-    b.ToTable(MaterialeShopConsts.DbTablePrefix + "Listas", MaterialeShopConsts.DbSchema);
-    b.ConfigureByConvention();
-    b.Property(x => x.Titulo).HasColumnName(nameof(Lista.Titulo)).IsRequired();
-});
 
         }
         if (builder.IsHostDatabase())
@@ -132,6 +126,17 @@ public class MaterialeShopDbContext :
     b.ToTable(MaterialeShopConsts.DbTablePrefix + "Enderecos", MaterialeShopConsts.DbSchema);
     b.ConfigureByConvention();
     b.Property(x => x.EnderecoCompleto).HasColumnName(nameof(Endereco.EnderecoCompleto)).IsRequired();
+});
+
+        }
+        if (builder.IsHostDatabase())
+        {
+            builder.Entity<Lista>(b =>
+{
+    b.ToTable(MaterialeShopConsts.DbTablePrefix + "Listas", MaterialeShopConsts.DbSchema);
+    b.ConfigureByConvention();
+    b.Property(x => x.Titulo).HasColumnName(nameof(Lista.Titulo)).IsRequired();
+    b.HasOne<Endereco>().WithMany().HasForeignKey(x => x.EnderecoId).OnDelete(DeleteBehavior.NoAction);
 });
 
         }

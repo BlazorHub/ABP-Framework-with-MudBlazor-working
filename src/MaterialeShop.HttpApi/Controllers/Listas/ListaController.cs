@@ -1,3 +1,4 @@
+using MaterialeShop.Shared;
 using System;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
@@ -25,9 +26,16 @@ namespace MaterialeShop.Controllers.Listas
         }
 
         [HttpGet]
-        public virtual Task<PagedResultDto<ListaDto>> GetListAsync(GetListasInput input)
+        public Task<PagedResultDto<ListaWithNavigationPropertiesDto>> GetListAsync(GetListasInput input)
         {
             return _listasAppService.GetListAsync(input);
+        }
+
+        [HttpGet]
+        [Route("with-navigation-properties/{id}")]
+        public Task<ListaWithNavigationPropertiesDto> GetWithNavigationPropertiesAsync(Guid id)
+        {
+            return _listasAppService.GetWithNavigationPropertiesAsync(id);
         }
 
         [HttpGet]
@@ -35,6 +43,13 @@ namespace MaterialeShop.Controllers.Listas
         public virtual Task<ListaDto> GetAsync(Guid id)
         {
             return _listasAppService.GetAsync(id);
+        }
+
+        [HttpGet]
+        [Route("endereco-lookup")]
+        public Task<PagedResultDto<LookupDto<Guid?>>> GetEnderecoLookupAsync(LookupRequestDto input)
+        {
+            return _listasAppService.GetEnderecoLookupAsync(input);
         }
 
         [HttpPost]

@@ -27,19 +27,19 @@ namespace MaterialeShop.Listas
             // Assert
             result.TotalCount.ShouldBe(2);
             result.Items.Count.ShouldBe(2);
-            result.Items.Any(x => x.Id == Guid.Parse("b3dd3f22-eaa8-44b6-8306-aa1e77c0cf00")).ShouldBe(true);
-            result.Items.Any(x => x.Id == Guid.Parse("ce235555-ad62-4b61-8f7f-2f45117f8d8d")).ShouldBe(true);
+            result.Items.Any(x => x.Lista.Id == Guid.Parse("e34ed866-71ee-4bce-afe1-c104dd4a482d")).ShouldBe(true);
+            result.Items.Any(x => x.Lista.Id == Guid.Parse("e04eb239-c7f3-454e-9149-f5c194a2546b")).ShouldBe(true);
         }
 
         [Fact]
         public async Task GetAsync()
         {
             // Act
-            var result = await _listasAppService.GetAsync(Guid.Parse("b3dd3f22-eaa8-44b6-8306-aa1e77c0cf00"));
+            var result = await _listasAppService.GetAsync(Guid.Parse("e34ed866-71ee-4bce-afe1-c104dd4a482d"));
 
             // Assert
             result.ShouldNotBeNull();
-            result.Id.ShouldBe(Guid.Parse("b3dd3f22-eaa8-44b6-8306-aa1e77c0cf00"));
+            result.Id.ShouldBe(Guid.Parse("e34ed866-71ee-4bce-afe1-c104dd4a482d"));
         }
 
         [Fact]
@@ -48,7 +48,7 @@ namespace MaterialeShop.Listas
             // Arrange
             var input = new ListaCreateDto
             {
-                Titulo = "6f"
+                Titulo = "b7"
             };
 
             // Act
@@ -58,7 +58,7 @@ namespace MaterialeShop.Listas
             var result = await _listaRepository.FindAsync(c => c.Id == serviceResult.Id);
 
             result.ShouldNotBe(null);
-            result.Titulo.ShouldBe("6f");
+            result.Titulo.ShouldBe("b7");
         }
 
         [Fact]
@@ -67,27 +67,27 @@ namespace MaterialeShop.Listas
             // Arrange
             var input = new ListaUpdateDto()
             {
-                Titulo = "29"
+                Titulo = "67"
             };
 
             // Act
-            var serviceResult = await _listasAppService.UpdateAsync(Guid.Parse("b3dd3f22-eaa8-44b6-8306-aa1e77c0cf00"), input);
+            var serviceResult = await _listasAppService.UpdateAsync(Guid.Parse("e34ed866-71ee-4bce-afe1-c104dd4a482d"), input);
 
             // Assert
             var result = await _listaRepository.FindAsync(c => c.Id == serviceResult.Id);
 
             result.ShouldNotBe(null);
-            result.Titulo.ShouldBe("29");
+            result.Titulo.ShouldBe("67");
         }
 
         [Fact]
         public async Task DeleteAsync()
         {
             // Act
-            await _listasAppService.DeleteAsync(Guid.Parse("b3dd3f22-eaa8-44b6-8306-aa1e77c0cf00"));
+            await _listasAppService.DeleteAsync(Guid.Parse("e34ed866-71ee-4bce-afe1-c104dd4a482d"));
 
             // Assert
-            var result = await _listaRepository.FindAsync(c => c.Id == Guid.Parse("b3dd3f22-eaa8-44b6-8306-aa1e77c0cf00"));
+            var result = await _listaRepository.FindAsync(c => c.Id == Guid.Parse("e34ed866-71ee-4bce-afe1-c104dd4a482d"));
 
             result.ShouldBeNull();
         }
