@@ -1,0 +1,261 @@
+@page "/lista-items"
+@attribute [Authorize(MaterialeShopPermissions.ListaItems.Default)]
+@using MaterialeShop.ListaItems
+@using MaterialeShop.Localization
+@using MaterialeShop.Shared
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.Extensions.Localization
+@using Microsoft.AspNetCore.Components.Web
+@using Blazorise
+@using Blazorise.Components
+@using Blazorise.DataGrid
+@using Volo.Abp.BlazoriseUI
+@using Volo.Abp.BlazoriseUI.Components
+@using Volo.Abp.ObjectMapping
+@using Volo.Abp.AspNetCore.Components.Messages
+@using Volo.Abp.AspNetCore.Components.Web.Theming.Layout
+@using MaterialeShop.Permissions
+@using Microsoft.AspNetCore.Components
+@using Volo.Abp.AspNetCore.Components.Web
+@using Volo.Abp.Http.Client
+@inherits MaterialeShopComponentBase
+@inject IListaItemsAppService ListaItemsAppService
+@inject IUiMessageService UiMessageService
+@inject IRemoteServiceConfigurationProvider RemoteServiceConfigurationProvider
+@inject NavigationManager NavigationManager
+
+@* ************************* PAGE HEADER ************************* *@
+<PageHeader Title="@L["ListaItems"]" BreadcrumbItems="BreadcrumbItems" Toolbar="Toolbar">
+
+</PageHeader>
+
+@* ************************* SEARCH ************************* *@
+<Card>
+    <CardBody>
+        <Form id="ListaItemSearchForm" class="mb-3">
+            <Addons>
+                <Addon AddonType="AddonType.Body">
+                    <TextEdit @bind-Text="@Filter.FilterText"
+                              Autofocus="true"
+                              Placeholder="@L["Search"]">
+                    </TextEdit>
+                </Addon>
+                <Addon AddonType="AddonType.End">
+                    <SubmitButton Form="ListaItemSearchForm" Clicked="GetListaItemsAsync">
+                        <Icon Name="IconName.Search" Class="me-1"></Icon>@L["Search"]
+                    </SubmitButton>
+                </Addon>
+            </Addons>
+        </Form>
+    </CardBody>
+</Card>
+
+@* ************************* DATA GRID ************************* *@
+<Card>
+    <CardBody>
+        <DataGrid TItem="ListaItemWithNavigationPropertiesDto"
+                  Data="ListaItemList"
+                  ReadData="OnDataGridReadAsync"
+                  TotalItems="TotalCount"
+                  ShowPager="true"
+                  Responsive="true"
+                  PageSize="PageSize">
+            <DataGridColumns>
+                <DataGridEntityActionsColumn TItem="ListaItemWithNavigationPropertiesDto" @ref="@EntityActionsColumn">
+                    <DisplayTemplate>
+                        <EntityActions TItem="ListaItemWithNavigationPropertiesDto" EntityActionsColumn="@EntityActionsColumn">
+                            <EntityAction TItem="ListaItemWithNavigationPropertiesDto"
+                                          Visible="@CanEditListaItem"
+                                          Clicked="async () => await OpenEditListaItemModalAsync(context)"
+                                          Text="@L["Edit"]"></EntityAction>
+                            <EntityAction TItem="ListaItemWithNavigationPropertiesDto"
+                                          Visible="@CanDeleteListaItem"
+                                          Clicked="() => DeleteListaItemAsync(context)"
+                                          ConfirmationMessage="@(()=> L["DeleteConfirmationMessage"])"
+                                          Text="@L["Delete"]"></EntityAction>
+                        </EntityActions>
+                    </DisplayTemplate>
+                </DataGridEntityActionsColumn>
+               
+              <DataGridColumn TItem="ListaItemWithNavigationPropertiesDto"
+                      Field="ListaItem.Descricao"
+                      Caption="@L["Descricao"]">
+              </DataGridColumn>
+
+              <DataGridColumn TItem="ListaItemWithNavigationPropertiesDto"
+                      Field="ListaItem.Quantidade"
+                      Caption="@L["Quantidade"]">
+              </DataGridColumn>
+
+              <DataGridColumn TItem="ListaItemWithNavigationPropertiesDto"
+                      Field="ListaItem.UnidadeMedida"
+                      Caption="@L["UnidadeMedida"]">
+              </DataGridColumn>
+
+              <DataGridColumn TItem="ListaItemWithNavigationPropertiesDto"
+                      Field="Lista.Titulo"
+                      Caption="@L["Lista"]">
+              </DataGridColumn>
+
+            </DataGridColumns>
+        </DataGrid>
+    </CardBody>
+</Card>
+
+@* ************************* CREATE MODAL ************************* *@
+<Modal @ref="CreateListaItemModal" Closing="@CreateListaItemModal.CancelClosingModalWhenFocusLost">
+    <ModalContent Centered="true">
+        <Form id="CreateListaItemForm">
+            <ModalHeader>
+                <ModalTitle>@L["NewListaItem"]</ModalTitle>
+                <CloseButton Clicked="CloseCreateListaItemModalAsync" />
+            </ModalHeader>
+            <ModalBody>
+                <Validations @ref="@NewListaItemValidations"
+                            Mode="ValidationMode.Auto"
+                            Model="@NewListaItem"
+                            ValidateOnLoad="false">
+                     
+                    
+                    <Validation>
+                        <Field>
+                            <FieldLabel>@L["Descricao"] *</FieldLabel>
+                            <TextEdit @bind-Text="@NewListaItem.Descricao" >
+                                <Feedback>
+                                    <ValidationError />
+                                </Feedback>
+                            </TextEdit>
+                        </Field>
+                    </Validation>
+
+
+                    <Validation>
+                        <Field>
+                            <FieldLabel>@L["Quantidade"]</FieldLabel>
+                            <TextEdit @bind-Text="@NewListaItem.Quantidade" >
+                                <Feedback>
+                                    <ValidationError />
+                                </Feedback>
+                            </TextEdit>
+                        </Field>
+                    </Validation>
+
+
+                    <Validation>
+                        <Field>
+                            <FieldLabel>@L["UnidadeMedida"]</FieldLabel>
+                            <TextEdit @bind-Text="@NewListaItem.UnidadeMedida" >
+                                <Feedback>
+                                    <ValidationError />
+                                </Feedback>
+                            </TextEdit>
+                        </Field>
+                    </Validation>
+
+
+                    <Field>
+                        <FieldLabel>@L["Lista"]</FieldLabel>
+                        <Select TValue="Guid" @bind-SelectedValue="@NewListaItem.ListaId">
+                            @foreach (var lista in Listas)
+                            {
+                                <SelectItem TValue="Guid" Value="@lista.Id">
+                                    @lista.DisplayName
+                                </SelectItem>
+                            }
+                        </Select>
+                    </Field>
+
+
+                    
+                    
+                </Validations>
+            </ModalBody>
+            <ModalFooter>
+                <Blazorise.Button Color="Blazorise.Color.Secondary"
+                        Clicked="CloseCreateListaItemModalAsync">
+                    @L["Cancel"]
+                </Blazorise.Button>
+                <SubmitButton Form="CreateListaItemForm" Clicked="CreateListaItemAsync" />
+            </ModalFooter>
+        </Form>
+    </ModalContent>
+</Modal>
+
+@* ************************* EDIT MODAL ************************* *@
+<Modal @ref="EditListaItemModal" Closing="@EditListaItemModal.CancelClosingModalWhenFocusLost">
+    <ModalContent Centered="true">
+        <Form id="EditListaItemForm">
+            <ModalHeader>
+                <ModalTitle>@L["Update"]</ModalTitle>
+                <CloseButton Clicked="CloseEditListaItemModalAsync" />
+            </ModalHeader>
+            <ModalBody>
+                <Validations @ref="@EditingListaItemValidations"
+                            Mode="ValidationMode.Auto"
+                            Model="@EditingListaItem"
+                            ValidateOnLoad="false">
+                     
+                    
+                    <Validation>
+                        <Field>
+                            <FieldLabel>@L["Descricao"] *</FieldLabel>
+                            <TextEdit @bind-Text="@EditingListaItem.Descricao" >
+                                <Feedback>
+                                    <ValidationError />
+                                </Feedback>
+                            </TextEdit>
+                        </Field>
+                    </Validation>
+
+
+                    <Validation>
+                        <Field>
+                            <FieldLabel>@L["Quantidade"]</FieldLabel>
+                            <TextEdit @bind-Text="@EditingListaItem.Quantidade" >
+                                <Feedback>
+                                    <ValidationError />
+                                </Feedback>
+                            </TextEdit>
+                        </Field>
+                    </Validation>
+
+
+                    <Validation>
+                        <Field>
+                            <FieldLabel>@L["UnidadeMedida"]</FieldLabel>
+                            <TextEdit @bind-Text="@EditingListaItem.UnidadeMedida" >
+                                <Feedback>
+                                    <ValidationError />
+                                </Feedback>
+                            </TextEdit>
+                        </Field>
+                    </Validation>
+
+
+                    <Field>
+                        <FieldLabel>@L["Lista"]</FieldLabel>
+                        <Select TValue="Guid" @bind-SelectedValue="@EditingListaItem.ListaId">
+                            @foreach (var lista in Listas)
+                            {
+                                <SelectItem TValue="Guid" Value="@lista.Id">
+                                    @lista.DisplayName
+                                </SelectItem>
+                            }
+                        </Select>
+                    </Field>
+
+
+                    
+                    
+                </Validations>
+            </ModalBody>
+            <ModalFooter>
+                <Blazorise.Button Color="Blazorise.Color.Secondary"
+                        Clicked="CloseEditListaItemModalAsync">
+                    @L["Cancel"]
+                </Blazorise.Button>
+                <SubmitButton Form="CreateListaItemForm" Clicked="UpdateListaItemAsync" />
+            </ModalFooter>
+        </Form>
+    </ModalContent>
+</Modal>

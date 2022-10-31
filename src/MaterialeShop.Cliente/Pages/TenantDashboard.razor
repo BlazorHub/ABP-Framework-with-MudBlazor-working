@@ -1,0 +1,55 @@
+﻿@page "/Dashboard"
+@using Volo.Abp.AuditLogging.Blazor.Pages.Shared.ErrorRateWidget
+@using Volo.Abp.AuditLogging.Blazor.Pages.Shared.AverageExecutionDurationPerDayWidget
+@using Volo.Abp.AspNetCore.Components.Web.Theming.Layout
+@inherits MaterialeShopComponentBase
+
+@* ************************* PAGE HEADER ************************* *@
+<PageHeader Title="@L["Dashboard"]" BreadcrumbItems="@BreadcrumbItems">
+
+</PageHeader>
+
+@* ************************* CONTENT ************************* *@
+<Card>
+    <CardBody>
+        <Blazorise.Row>
+            <Blazorise.Column ColumnSize="ColumnSize.Is5.OnWidescreen.Is12.OnDesktop" class="mb-3 mb-lg-0">
+                <Addons>
+                    <Addon AddonType="AddonType.Start">
+                        <AddonLabel>@L["StartDate"]</AddonLabel>
+                    </Addon>
+                    <Addon AddonType="AddonType.Body">
+                        <DatePicker TValue="DateTime" @bind-Date="@StartDate"/>
+                    </Addon>
+                </Addons>
+            </Blazorise.Column>
+            <Blazorise.Column ColumnSize="ColumnSize.Is5.OnWidescreen.Is12.OnDesktop" class="mb-3 mb-lg-0">
+                <Addons>
+                    <Addon AddonType="AddonType.Start">
+                        <AddonLabel>@L["EndDate"]</AddonLabel>
+                    </Addon>
+                    <Addon AddonType="AddonType.Body">
+                        <DatePicker TValue="DateTime" @bind-Date="@EndDate"/>
+                    </Addon>
+                </Addons>
+            </Blazorise.Column>
+            <Blazorise.Column ColumnSize="ColumnSize.Is2.OnWidescreen.Is12.OnDesktop" class="d-grid gap-2">
+                <Blazorise.Button Color="Blazorise.Color.Primary" Clicked="@RefreshAsync">
+                    <Icon Name="@("fa fa-refresh")"></Icon> @L["Refresh"]
+                </Blazorise.Button>
+            </Blazorise.Column>
+        </Blazorise.Row>
+    </CardBody>
+</Card>
+
+<Blazorise.Row>
+    @if (HasAuditLoggingPermission)
+    {
+        <Blazorise.Column ColumnSize="ColumnSize.Is4">
+            <AuditLoggingErrorRateWidgetComponent @bind-StartDate="@StartDate" @bind-EndDate="@EndDate" @ref="ErrorRateWidgetComponent"/>
+        </Blazorise.Column>
+        <Blazorise.Column ColumnSize="ColumnSize.Is4">
+            <AuditLoggingAverageExecutionDurationPerDayWidgetComponent @bind-StartDate="@StartDate" @bind-EndDate="@EndDate" @ref="AverageExecutionDurationPerDayWidgetComponent"/>
+        </Blazorise.Column>
+    }
+</Blazorise.Row>
