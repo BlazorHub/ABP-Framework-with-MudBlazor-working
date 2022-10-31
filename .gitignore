@@ -269,3 +269,7 @@ src/MaterialeShop.Blazor.Server.Tiered/Logs/*
 # IdentityServer temp files
 tempkey.rsa
 tempkey.jwk
+
+!**/packages/*Theme*
+
+.history
