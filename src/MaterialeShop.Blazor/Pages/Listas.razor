@@ -1,0 +1,205 @@
+@page "/listas"
+@attribute [Authorize(MaterialeShopPermissions.Listas.Default)]
+@using MaterialeShop.Listas
+@using MaterialeShop.Localization
+@using MaterialeShop.Shared
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.Extensions.Localization
+@using Microsoft.AspNetCore.Components.Web
+@using Blazorise
+@using Blazorise.Components
+@using Blazorise.DataGrid
+@using Volo.Abp.BlazoriseUI
+@using Volo.Abp.BlazoriseUI.Components
+@using Volo.Abp.ObjectMapping
+@using Volo.Abp.AspNetCore.Components.Messages
+@using Volo.Abp.AspNetCore.Components.Web.Theming.Layout
+@using MaterialeShop.Permissions
+@using Microsoft.AspNetCore.Components
+@using Volo.Abp.AspNetCore.Components.Web
+@using Volo.Abp.Http.Client
+@inherits MaterialeShopComponentBase
+@inject IListasAppService ListasAppService
+@inject IUiMessageService UiMessageService
+@inject IRemoteServiceConfigurationProvider RemoteServiceConfigurationProvider
+@inject NavigationManager NavigationManager
+
+@* ************************* PAGE HEADER ************************* *@
+<PageHeader Title="@L["Listas"]" BreadcrumbItems="BreadcrumbItems" Toolbar="Toolbar">
+
+</PageHeader>
+
+@* ************************* SEARCH ************************* *@
+<Card>
+    <CardBody>
+        <Form id="ListaSearchForm" class="mb-3">
+            <Addons>
+                <Addon AddonType="AddonType.Body">
+                    <TextEdit @bind-Text="@Filter.FilterText"
+                              Autofocus="true"
+                              Placeholder="@L["Search"]">
+                    </TextEdit>
+                </Addon>
+                <Addon AddonType="AddonType.End">
+                    <SubmitButton Form="ListaSearchForm" Clicked="GetListasAsync">
+                        <Icon Name="IconName.Search" Class="me-1"></Icon>@L["Search"]
+                    </SubmitButton>
+                </Addon>
+            </Addons>
+        </Form>
+    </CardBody>
+</Card>
+
+@* ************************* DATA GRID ************************* *@
+<Card>
+    <CardBody>
+        <DataGrid TItem="ListaWithNavigationPropertiesDto"
+                  Data="ListaList"
+                  ReadData="OnDataGridReadAsync"
+                  TotalItems="TotalCount"
+                  ShowPager="true"
+                  Responsive="true"
+                  PageSize="PageSize">
+            <DataGridColumns>
+                <DataGridEntityActionsColumn TItem="ListaWithNavigationPropertiesDto" @ref="@EntityActionsColumn">
+                    <DisplayTemplate>
+                        <EntityActions TItem="ListaWithNavigationPropertiesDto" EntityActionsColumn="@EntityActionsColumn">
+                            <EntityAction TItem="ListaWithNavigationPropertiesDto"
+                                          Visible="@CanEditLista"
+                                          Clicked="async () => await OpenEditListaModalAsync(context)"
+                                          Text="@L["Edit"]"></EntityAction>
+                            <EntityAction TItem="ListaWithNavigationPropertiesDto"
+                                          Visible="@CanDeleteLista"
+                                          Clicked="() => DeleteListaAsync(context)"
+                                          ConfirmationMessage="@(()=> L["DeleteConfirmationMessage"])"
+                                          Text="@L["Delete"]"></EntityAction>
+                        </EntityActions>
+                    </DisplayTemplate>
+                </DataGridEntityActionsColumn>
+               
+              <DataGridColumn TItem="ListaWithNavigationPropertiesDto"
+                      Field="Lista.Titulo"
+                      Caption="@L["Titulo"]">
+              </DataGridColumn>
+
+              <DataGridColumn TItem="ListaWithNavigationPropertiesDto"
+                      Field="Endereco.EnderecoCompleto"
+                      Caption="@L["Endereco"]">
+              </DataGridColumn>
+
+            </DataGridColumns>
+        </DataGrid>
+    </CardBody>
+</Card>
+
+@* ************************* CREATE MODAL ************************* *@
+<Modal @ref="CreateListaModal" Closing="@CreateListaModal.CancelClosingModalWhenFocusLost">
+    <ModalContent Centered="true">
+        <Form id="CreateListaForm">
+            <ModalHeader>
+                <ModalTitle>@L["NewLista"]</ModalTitle>
+                <CloseButton Clicked="CloseCreateListaModalAsync" />
+            </ModalHeader>
+            <ModalBody>
+                <Validations @ref="@NewListaValidations"
+                            Mode="ValidationMode.Auto"
+                            Model="@NewLista"
+                            ValidateOnLoad="false">
+                     
+                    
+                    <Validation>
+                        <Field>
+                            <FieldLabel>@L["Titulo"] *</FieldLabel>
+                            <TextEdit @bind-Text="@NewLista.Titulo" >
+                                <Feedback>
+                                    <ValidationError />
+                                </Feedback>
+                            </TextEdit>
+                        </Field>
+                    </Validation>
+
+
+                    <Field>
+                        <FieldLabel>@L["Endereco"]</FieldLabel>
+                        <Select TValue="Guid?" @bind-SelectedValue="@NewLista.EnderecoId">
+                            <SelectItem TValue="Guid?" Value="null"></SelectItem>
+                            @foreach (var endereco in EnderecosNullable)
+                            {
+                                <SelectItem TValue="Guid?" Value="@endereco.Id">
+                                    @endereco.DisplayName
+                                </SelectItem>
+                            }
+                        </Select>
+                    </Field>
+
+
+                    
+                    
+                </Validations>
+            </ModalBody>
+            <ModalFooter>
+                <Blazorise.Button Color="Blazorise.Color.Secondary"
+                        Clicked="CloseCreateListaModalAsync">
+                    @L["Cancel"]
+                </Blazorise.Button>
+                <SubmitButton Form="CreateListaForm" Clicked="CreateListaAsync" />
+            </ModalFooter>
+        </Form>
+    </ModalContent>
+</Modal>
+
+@* ************************* EDIT MODAL ************************* *@
+<Modal @ref="EditListaModal" Closing="@EditListaModal.CancelClosingModalWhenFocusLost">
+    <ModalContent Centered="true">
+        <Form id="EditListaForm">
+            <ModalHeader>
+                <ModalTitle>@L["Update"]</ModalTitle>
+                <CloseButton Clicked="CloseEditListaModalAsync" />
+            </ModalHeader>
+            <ModalBody>
+                <Validations @ref="@EditingListaValidations"
+                            Mode="ValidationMode.Auto"
+                            Model="@EditingLista"
+                            ValidateOnLoad="false">
+                     
+                    
+                    <Validation>
+                        <Field>
+                            <FieldLabel>@L["Titulo"] *</FieldLabel>
+                            <TextEdit @bind-Text="@EditingLista.Titulo" >
+                                <Feedback>
+                                    <ValidationError />
+                                </Feedback>
+                            </TextEdit>
+                        </Field>
+                    </Validation>
+
+
+                    <Field>
+                        <FieldLabel>@L["Endereco"]</FieldLabel>
+                        <Select TValue="Guid?" @bind-SelectedValue="@EditingLista.EnderecoId">
+                            <SelectItem TValue="Guid?" Value="null"></SelectItem>
+                            @foreach (var endereco in EnderecosNullable)
+                            {
+                                <SelectItem TValue="Guid?" Value="@endereco.Id">
+                                    @endereco.DisplayName
+                                </SelectItem>
+                            }
+                        </Select>
+                    </Field>
+
+
+                    
+                    
+                </Validations>
+            </ModalBody>
+            <ModalFooter>
+                <Blazorise.Button Color="Blazorise.Color.Secondary"
+                        Clicked="CloseEditListaModalAsync">
+                    @L["Cancel"]
+                </Blazorise.Button>
+                <SubmitButton Form="CreateListaForm" Clicked="UpdateListaAsync" />
+            </ModalFooter>
+        </Form>
+    </ModalContent>
+</Modal>
