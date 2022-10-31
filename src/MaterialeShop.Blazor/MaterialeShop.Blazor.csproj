@@ -14,6 +14,7 @@
     <PackageReference Include="Blazorise.Components" Version="1.0.6" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="6.0.5" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="6.0.5" PrivateAssets="all" />
+    <ProjectReference Include="..\..\packages\Volo.Abp.AspNetCore.Components.Web.BasicTheme\Volo.Abp.AspNetCore.Components.Web.BasicTheme.csproj" />
   </ItemGroup>
 
   <ItemGroup>
@@ -21,7 +22,7 @@
   </ItemGroup>
   
   <ItemGroup>
-	<PackageReference Include="Volo.Abp.AspNetCore.Components.WebAssembly.BasicTheme" Version="6.0.1" />
+	<ProjectReference Include="..\..\packages\Volo.Abp.AspNetCore.Components.WebAssembly.BasicTheme\Volo.Abp.AspNetCore.Components.WebAssembly.BasicTheme.csproj" />
   </ItemGroup>
 
   <ItemGroup>

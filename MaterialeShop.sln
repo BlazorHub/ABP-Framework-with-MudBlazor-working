@@ -5,6 +5,10 @@ VisualStudioVersion = 17.3.32611.2
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MaterialeShop.Domain", "src\MaterialeShop.Domain\MaterialeShop.Domain.csproj", "{554AD327-6DBA-4F8F-96F8-81CE7A0C863F}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Volo.Abp.AspNetCore.Components.Web.BasicTheme", "packages\Volo.Abp.AspNetCore.Components.Web.BasicTheme\\Volo.Abp.AspNetCore.Components.Web.BasicTheme.csproj", "{8d91b1e2-c0eb-40aa-8208-b16055ecde92}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Volo.Abp.AspNetCore.Components.WebAssembly.BasicTheme", "packages\Volo.Abp.AspNetCore.Components.WebAssembly.BasicTheme\\Volo.Abp.AspNetCore.Components.WebAssembly.BasicTheme.csproj", "{884e03d3-7833-4034-8830-5041dda281ef}"
+EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MaterialeShop.Application", "src\MaterialeShop.Application\MaterialeShop.Application.csproj", "{1A94A50E-06DC-43C1-80B5-B662820EC3EB}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MaterialeShop.EntityFrameworkCore", "src\MaterialeShop.EntityFrameworkCore\MaterialeShop.EntityFrameworkCore.csproj", "{C956DD76-69C8-4A9C-83EA-D17DF83340FD}"
@@ -43,6 +47,14 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{8d91b1e2-c0eb-40aa-8208-b16055ecde92}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8d91b1e2-c0eb-40aa-8208-b16055ecde92}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8d91b1e2-c0eb-40aa-8208-b16055ecde92}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8d91b1e2-c0eb-40aa-8208-b16055ecde92}.Release|Any CPU.Build.0 = Release|Any CPU
+		{884e03d3-7833-4034-8830-5041dda281ef}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{884e03d3-7833-4034-8830-5041dda281ef}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{884e03d3-7833-4034-8830-5041dda281ef}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{884e03d3-7833-4034-8830-5041dda281ef}.Release|Any CPU.Build.0 = Release|Any CPU
 		{554AD327-6DBA-4F8F-96F8-81CE7A0C863F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{554AD327-6DBA-4F8F-96F8-81CE7A0C863F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{554AD327-6DBA-4F8F-96F8-81CE7A0C863F}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -108,6 +120,8 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
+		{8d91b1e2-c0eb-40aa-8208-b16055ecde92} = {CA9AC87F-097E-4F15-8393-4BC07735A5B0}
+		{884e03d3-7833-4034-8830-5041dda281ef} = {CA9AC87F-097E-4F15-8393-4BC07735A5B0}
 		{554AD327-6DBA-4F8F-96F8-81CE7A0C863F} = {CA9AC87F-097E-4F15-8393-4BC07735A5B0}
 		{1A94A50E-06DC-43C1-80B5-B662820EC3EB} = {CA9AC87F-097E-4F15-8393-4BC07735A5B0}
 		{C956DD76-69C8-4A9C-83EA-D17DF83340FD} = {CA9AC87F-097E-4F15-8393-4BC07735A5B0}

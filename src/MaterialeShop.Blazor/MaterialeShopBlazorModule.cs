@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Net.Http;
 using Blazorise.Bootstrap5;
 using Blazorise.Icons.FontAwesome;
@@ -25,6 +25,7 @@ using Volo.Abp.OpenIddict.Pro.Blazor.WebAssembly;
 using Volo.Abp.SettingManagement.Blazor.WebAssembly;
 using Volo.Abp.TextTemplateManagement.Blazor.WebAssembly;
 using Volo.Saas.Host.Blazor.WebAssembly;
+using Volo.Abp.AspNetCore.Components.Web.BasicTheme;
 
 
 namespace MaterialeShop.Blazor;
@@ -43,7 +44,8 @@ namespace MaterialeShop.Blazor;
     typeof(SaasHostBlazorWebAssemblyModule),
     typeof(TextTemplateManagementBlazorWebAssemblyModule)
 )]
-public class MaterialeShopBlazorModule : AbpModule
+[DependsOn(typeof(AbpAspNetCoreComponentsWebBasicThemeModule))]
+    public class MaterialeShopBlazorModule : AbpModule
 {
     public override void ConfigureServices(ServiceConfigurationContext context)
     {
