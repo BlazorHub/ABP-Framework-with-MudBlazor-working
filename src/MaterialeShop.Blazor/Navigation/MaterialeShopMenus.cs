@@ -12,4 +12,6 @@ public class MaterialeShopMenus
 
     public const string ListaItems = Prefix + ".ListaItems";
 
+    public const string Enderecos = Prefix + ".Enderecos";
+
 }

@@ -52,6 +52,11 @@
     "ListaItems": "Lista Items",
     "NewListaItem": "New Lista Item",
     "Menu:ListaItems": "Lista Items",
-    "Lista": "Lista"
+    "Lista": "Lista",
+    "Permission:Enderecos": "Enderecos",
+    "EnderecoCompleto": "Endereco Completo",
+    "Enderecos": "Enderecos",
+    "NewEndereco": "New Endereco",
+    "Menu:Enderecos": "Enderecos"
   }
 }

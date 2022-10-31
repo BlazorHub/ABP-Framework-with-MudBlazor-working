@@ -1,3 +1,4 @@
+using MaterialeShop.Enderecos;
 using MaterialeShop.ListaItems;
 using MaterialeShop.Listas;
 using Volo.Abp.EntityFrameworkCore.Modeling;
@@ -31,6 +32,7 @@ public class MaterialeShopDbContext :
     IIdentityProDbContext,
     ISaasDbContext
 {
+    public DbSet<Endereco> Enderecos { get; set; }
     public DbSet<ListaItem> ListaItems { get; set; }
     public DbSet<Lista> Listas { get; set; }
     /* Add DbSet properties for your Aggregate Roots / Entities here. */
@@ -120,6 +122,16 @@ public class MaterialeShopDbContext :
     b.Property(x => x.Quantidade).HasColumnName(nameof(ListaItem.Quantidade));
     b.Property(x => x.UnidadeMedida).HasColumnName(nameof(ListaItem.UnidadeMedida));
     b.HasOne<Lista>().WithMany().IsRequired().HasForeignKey(x => x.ListaId).OnDelete(DeleteBehavior.NoAction);
+});
+
+        }
+        if (builder.IsHostDatabase())
+        {
+            builder.Entity<Endereco>(b =>
+{
+    b.ToTable(MaterialeShopConsts.DbTablePrefix + "Enderecos", MaterialeShopConsts.DbSchema);
+    b.ConfigureByConvention();
+    b.Property(x => x.EnderecoCompleto).HasColumnName(nameof(Endereco.EnderecoCompleto)).IsRequired();
 });
 
         }

@@ -1,3 +1,4 @@
+using MaterialeShop.Enderecos;
 using MaterialeShop.ListaItems;
 using MaterialeShop.Listas;
 using System;
@@ -54,6 +55,8 @@ public class MaterialeShopEntityFrameworkCoreModule : AbpModule
             options.AddRepository<Lista, Listas.EfCoreListaRepository>();
 
             options.AddRepository<ListaItem, ListaItems.EfCoreListaItemRepository>();
+
+            options.AddRepository<Endereco, Enderecos.EfCoreEnderecoRepository>();
 
         });
 

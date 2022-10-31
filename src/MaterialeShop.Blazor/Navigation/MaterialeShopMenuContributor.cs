@@ -136,6 +136,15 @@ public class MaterialeShopMenuContributor : IMenuContributor
                 icon: "fa fa-list",
                 requiredPermissionName: MaterialeShopPermissions.ListaItems.Default)
         );
+
+        context.Menu.AddItem(
+            new ApplicationMenuItem(
+                MaterialeShopMenus.Enderecos,
+                l["Menu:Enderecos"],
+                url: "/enderecos",
+                icon: "fa fa-map-marker-alt",
+                requiredPermissionName: MaterialeShopPermissions.Enderecos.Default)
+        );
         return Task.CompletedTask;
     }
 

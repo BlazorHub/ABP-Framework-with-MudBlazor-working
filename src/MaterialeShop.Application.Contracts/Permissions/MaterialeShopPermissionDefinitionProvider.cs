@@ -26,6 +26,11 @@ public class MaterialeShopPermissionDefinitionProvider : PermissionDefinitionPro
         listaItemPermission.AddChild(MaterialeShopPermissions.ListaItems.Create, L("Permission:Create"));
         listaItemPermission.AddChild(MaterialeShopPermissions.ListaItems.Edit, L("Permission:Edit"));
         listaItemPermission.AddChild(MaterialeShopPermissions.ListaItems.Delete, L("Permission:Delete"));
+
+        var enderecoPermission = myGroup.AddPermission(MaterialeShopPermissions.Enderecos.Default, L("Permission:Enderecos"));
+        enderecoPermission.AddChild(MaterialeShopPermissions.Enderecos.Create, L("Permission:Create"));
+        enderecoPermission.AddChild(MaterialeShopPermissions.Enderecos.Edit, L("Permission:Edit"));
+        enderecoPermission.AddChild(MaterialeShopPermissions.Enderecos.Delete, L("Permission:Delete"));
     }
 
     private static LocalizableString L(string name)

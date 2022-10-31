@@ -29,4 +29,12 @@ public static class MaterialeShopPermissions
         public const string Create = Default + ".Create";
         public const string Delete = Default + ".Delete";
     }
+
+    public static class Enderecos
+    {
+        public const string Default = GroupName + ".Enderecos";
+        public const string Edit = Default + ".Edit";
+        public const string Create = Default + ".Create";
+        public const string Delete = Default + ".Delete";
+    }
 }

@@ -1,3 +1,4 @@
+using MaterialeShop.Enderecos;
 using MaterialeShop.ListaItems;
 using Volo.Abp.AutoMapper;
 using MaterialeShop.Listas;
@@ -14,5 +15,7 @@ public class MaterialeShopBlazorAutoMapperProfile : Profile
         CreateMap<ListaDto, ListaUpdateDto>();
 
         CreateMap<ListaItemDto, ListaItemUpdateDto>();
+
+        CreateMap<EnderecoDto, EnderecoUpdateDto>();
     }
 }
