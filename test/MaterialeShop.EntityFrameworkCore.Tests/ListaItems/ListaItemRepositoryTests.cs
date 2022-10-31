@@ -25,15 +25,15 @@ namespace MaterialeShop.ListaItems
             {
                 // Act
                 var result = await _listaItemRepository.GetListAsync(
-                    descricao: "a5",
-                    quantidade: "d67e6cf6ff9a46a5b252c7c2ff9941e8b0de7af9566e42969abdcfca24edd0fc03a212a28d3",
-                    unidadeMedida: "be3f40da0cba497fb2e23a2f34a348a898cd7f"
+                    descricao: "65",
+                    quantidade: "c0319b70901",
+                    unidadeMedida: "9e0ef6c1517a453c847ddefb69275fe5"
                 );
 
                 // Assert
                 result.Count.ShouldBe(1);
                 result.FirstOrDefault().ShouldNotBe(null);
-                result.First().Id.ShouldBe(Guid.Parse("ca05d424-149b-4f00-8724-68fed5686811"));
+                result.First().Id.ShouldBe(Guid.Parse("1bac6082-4543-4c7e-9ef8-5e45262904b1"));
             });
         }
 
@@ -45,9 +45,9 @@ namespace MaterialeShop.ListaItems
             {
                 // Act
                 var result = await _listaItemRepository.GetCountAsync(
-                    descricao: "06",
-                    quantidade: "bed606c2bc9e476db9b41ed6ba00ce0ea3bd3f3580f942c29eded8e2df3cff20327d183568b6404aa0e7",
-                    unidadeMedida: "4a0fe57a8f404dc8a27026563372a4210433d458e76c43e29e3ec7243473c15e146f0046486b4e5"
+                    descricao: "65",
+                    quantidade: "9f07dcce1a554b8f8cff869f7dfc018e1a41f3ea48ac4ecab895626fe99df971b2bb",
+                    unidadeMedida: "9ebeec66872749538c53eca54e4c7cbeb19e0210cacc4712831154664afda57576a66727ff184e23b908d44499"
                 );
 
                 // Assert

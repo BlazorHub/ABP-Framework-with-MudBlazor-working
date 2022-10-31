@@ -1,3 +1,4 @@
+using MaterialeShop.Shared;
 using System;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
@@ -25,9 +26,16 @@ namespace MaterialeShop.Controllers.ListaItems
         }
 
         [HttpGet]
-        public virtual Task<PagedResultDto<ListaItemDto>> GetListAsync(GetListaItemsInput input)
+        public Task<PagedResultDto<ListaItemWithNavigationPropertiesDto>> GetListAsync(GetListaItemsInput input)
         {
             return _listaItemsAppService.GetListAsync(input);
+        }
+
+        [HttpGet]
+        [Route("with-navigation-properties/{id}")]
+        public Task<ListaItemWithNavigationPropertiesDto> GetWithNavigationPropertiesAsync(Guid id)
+        {
+            return _listaItemsAppService.GetWithNavigationPropertiesAsync(id);
         }
 
         [HttpGet]
@@ -35,6 +43,13 @@ namespace MaterialeShop.Controllers.ListaItems
         public virtual Task<ListaItemDto> GetAsync(Guid id)
         {
             return _listaItemsAppService.GetAsync(id);
+        }
+
+        [HttpGet]
+        [Route("lista-lookup")]
+        public Task<PagedResultDto<LookupDto<Guid>>> GetListaLookupAsync(LookupRequestDto input)
+        {
+            return _listaItemsAppService.GetListaLookupAsync(input);
         }
 
         [HttpPost]

@@ -19,11 +19,11 @@ namespace MaterialeShop.ListaItems
         }
 
         public async Task<ListaItem> CreateAsync(
-        string descricao, string quantidade, string unidadeMedida)
+        Guid listaId, string descricao, string quantidade, string unidadeMedida)
         {
             var listaItem = new ListaItem(
              GuidGenerator.Create(),
-             descricao, quantidade, unidadeMedida
+             listaId, descricao, quantidade, unidadeMedida
              );
 
             return await _listaItemRepository.InsertAsync(listaItem);
@@ -31,7 +31,7 @@ namespace MaterialeShop.ListaItems
 
         public async Task<ListaItem> UpdateAsync(
             Guid id,
-            string descricao, string quantidade, string unidadeMedida, [CanBeNull] string concurrencyStamp = null
+            Guid listaId, string descricao, string quantidade, string unidadeMedida, [CanBeNull] string concurrencyStamp = null
         )
         {
             var queryable = await _listaItemRepository.GetQueryableAsync();
@@ -39,6 +39,7 @@ namespace MaterialeShop.ListaItems
 
             var listaItem = await AsyncExecuter.FirstOrDefaultAsync(query);
 
+            listaItem.ListaId = listaId;
             listaItem.Descricao = descricao;
             listaItem.Quantidade = quantidade;
             listaItem.UnidadeMedida = unidadeMedida;

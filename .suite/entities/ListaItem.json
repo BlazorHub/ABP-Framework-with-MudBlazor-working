@@ -84,7 +84,23 @@
       "OrdinalIndex": 0
     }
   ],
-  "NavigationProperties": [],
+  "NavigationProperties": [
+    {
+      "EntityNameWithDuplicationNumber": "Lista",
+      "EntitySetNameWithDuplicationNumber": "Listas",
+      "ReferencePropertyName": "Lista",
+      "UiPickType": "Dropdown",
+      "IsRequired": true,
+      "Name": "ListaId",
+      "DisplayProperty": "Titulo",
+      "Namespace": "MaterialeShop.Listas",
+      "EntityName": "Lista",
+      "EntitySetName": "Listas",
+      "DtoNamespace": "MaterialeShop.Listas",
+      "DtoEntityName": "ListaDto",
+      "Type": "Guid"
+    }
+  ],
   "NavigationConnections": [],
   "PhysicalFileName": "ListaItem.json"
 }

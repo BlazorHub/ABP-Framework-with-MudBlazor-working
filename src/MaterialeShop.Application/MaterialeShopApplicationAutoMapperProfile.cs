@@ -20,5 +20,8 @@ public class MaterialeShopApplicationAutoMapperProfile : Profile
 
         CreateMap<ListaItem, ListaItemDto>();
         CreateMap<ListaItem, ListaItemExcelDto>();
+
+        CreateMap<ListaItemWithNavigationProperties, ListaItemWithNavigationPropertiesDto>();
+        CreateMap<Lista, LookupDto<Guid>>().ForMember(dest => dest.DisplayName, opt => opt.MapFrom(src => src.Titulo));
     }
 }

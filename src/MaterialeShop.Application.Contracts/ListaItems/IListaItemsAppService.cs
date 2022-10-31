@@ -1,3 +1,4 @@
+using MaterialeShop.Shared;
 using System;
 using System.Threading.Tasks;
 using Volo.Abp.Application.Dtos;
@@ -9,9 +10,13 @@ namespace MaterialeShop.ListaItems
 {
     public interface IListaItemsAppService : IApplicationService
     {
-        Task<PagedResultDto<ListaItemDto>> GetListAsync(GetListaItemsInput input);
+        Task<PagedResultDto<ListaItemWithNavigationPropertiesDto>> GetListAsync(GetListaItemsInput input);
+
+        Task<ListaItemWithNavigationPropertiesDto> GetWithNavigationPropertiesAsync(Guid id);
 
         Task<ListaItemDto> GetAsync(Guid id);
+
+        Task<PagedResultDto<LookupDto<Guid>>> GetListaLookupAsync(LookupRequestDto input);
 
         Task DeleteAsync(Guid id);
 

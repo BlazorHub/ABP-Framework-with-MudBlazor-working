@@ -1,3 +1,4 @@
+using MaterialeShop.Listas;
 using System;
 using System.Linq;
 using System.Collections.Generic;
@@ -21,13 +22,14 @@ namespace MaterialeShop.ListaItems
 
         [CanBeNull]
         public virtual string UnidadeMedida { get; set; }
+        public Guid ListaId { get; set; }
 
         public ListaItem()
         {
 
         }
 
-        public ListaItem(Guid id, string descricao, string quantidade, string unidadeMedida)
+        public ListaItem(Guid id, Guid listaId, string descricao, string quantidade, string unidadeMedida)
         {
 
             Id = id;
@@ -35,6 +37,7 @@ namespace MaterialeShop.ListaItems
             Descricao = descricao;
             Quantidade = quantidade;
             UnidadeMedida = unidadeMedida;
+            ListaId = listaId;
         }
 
     }

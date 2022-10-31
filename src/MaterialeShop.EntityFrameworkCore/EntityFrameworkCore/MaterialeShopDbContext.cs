@@ -108,6 +108,10 @@ public class MaterialeShopDbContext :
         }
         if (builder.IsHostDatabase())
         {
+
+        }
+        if (builder.IsHostDatabase())
+        {
             builder.Entity<ListaItem>(b =>
 {
     b.ToTable(MaterialeShopConsts.DbTablePrefix + "ListaItems", MaterialeShopConsts.DbSchema);
@@ -115,6 +119,7 @@ public class MaterialeShopDbContext :
     b.Property(x => x.Descricao).HasColumnName(nameof(ListaItem.Descricao)).IsRequired();
     b.Property(x => x.Quantidade).HasColumnName(nameof(ListaItem.Quantidade));
     b.Property(x => x.UnidadeMedida).HasColumnName(nameof(ListaItem.UnidadeMedida));
+    b.HasOne<Lista>().WithMany().IsRequired().HasForeignKey(x => x.ListaId).OnDelete(DeleteBehavior.NoAction);
 });
 
         }

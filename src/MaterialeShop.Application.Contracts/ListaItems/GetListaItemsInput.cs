@@ -10,6 +10,7 @@ namespace MaterialeShop.ListaItems
         public string Descricao { get; set; }
         public string Quantidade { get; set; }
         public string UnidadeMedida { get; set; }
+        public Guid? ListaId { get; set; }
 
         public GetListaItemsInput()
         {

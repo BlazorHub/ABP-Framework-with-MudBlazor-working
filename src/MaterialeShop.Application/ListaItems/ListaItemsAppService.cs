@@ -1,3 +1,5 @@
+using MaterialeShop.Shared;
+using MaterialeShop.Listas;
 using System;
 using System.IO;
 using System.Linq;
@@ -27,29 +29,52 @@ namespace MaterialeShop.ListaItems
         private readonly IDistributedCache<ListaItemExcelDownloadTokenCacheItem, string> _excelDownloadTokenCache;
         private readonly IListaItemRepository _listaItemRepository;
         private readonly ListaItemManager _listaItemManager;
+        private readonly IRepository<Lista, Guid> _listaRepository;
 
-        public ListaItemsAppService(IListaItemRepository listaItemRepository, ListaItemManager listaItemManager, IDistributedCache<ListaItemExcelDownloadTokenCacheItem, string> excelDownloadTokenCache)
+        public ListaItemsAppService(IListaItemRepository listaItemRepository, ListaItemManager listaItemManager, IDistributedCache<ListaItemExcelDownloadTokenCacheItem, string> excelDownloadTokenCache, IRepository<Lista, Guid> listaRepository)
         {
             _excelDownloadTokenCache = excelDownloadTokenCache;
             _listaItemRepository = listaItemRepository;
-            _listaItemManager = listaItemManager;
+            _listaItemManager = listaItemManager; _listaRepository = listaRepository;
         }
 
-        public virtual async Task<PagedResultDto<ListaItemDto>> GetListAsync(GetListaItemsInput input)
+        public virtual async Task<PagedResultDto<ListaItemWithNavigationPropertiesDto>> GetListAsync(GetListaItemsInput input)
         {
-            var totalCount = await _listaItemRepository.GetCountAsync(input.FilterText, input.Descricao, input.Quantidade, input.UnidadeMedida);
-            var items = await _listaItemRepository.GetListAsync(input.FilterText, input.Descricao, input.Quantidade, input.UnidadeMedida, input.Sorting, input.MaxResultCount, input.SkipCount);
+            var totalCount = await _listaItemRepository.GetCountAsync(input.FilterText, input.Descricao, input.Quantidade, input.UnidadeMedida, input.ListaId);
+            var items = await _listaItemRepository.GetListWithNavigationPropertiesAsync(input.FilterText, input.Descricao, input.Quantidade, input.UnidadeMedida, input.ListaId, input.Sorting, input.MaxResultCount, input.SkipCount);
 
-            return new PagedResultDto<ListaItemDto>
+            return new PagedResultDto<ListaItemWithNavigationPropertiesDto>
             {
                 TotalCount = totalCount,
-                Items = ObjectMapper.Map<List<ListaItem>, List<ListaItemDto>>(items)
+                Items = ObjectMapper.Map<List<ListaItemWithNavigationProperties>, List<ListaItemWithNavigationPropertiesDto>>(items)
             };
+        }
+
+        public virtual async Task<ListaItemWithNavigationPropertiesDto> GetWithNavigationPropertiesAsync(Guid id)
+        {
+            return ObjectMapper.Map<ListaItemWithNavigationProperties, ListaItemWithNavigationPropertiesDto>
+                (await _listaItemRepository.GetWithNavigationPropertiesAsync(id));
         }
 
         public virtual async Task<ListaItemDto> GetAsync(Guid id)
         {
             return ObjectMapper.Map<ListaItem, ListaItemDto>(await _listaItemRepository.GetAsync(id));
+        }
+
+        public virtual async Task<PagedResultDto<LookupDto<Guid>>> GetListaLookupAsync(LookupRequestDto input)
+        {
+            var query = (await _listaRepository.GetQueryableAsync())
+                .WhereIf(!string.IsNullOrWhiteSpace(input.Filter),
+                    x => x.Titulo != null &&
+                         x.Titulo.Contains(input.Filter));
+
+            var lookupData = await query.PageBy(input.SkipCount, input.MaxResultCount).ToDynamicListAsync<Lista>();
+            var totalCount = query.Count();
+            return new PagedResultDto<LookupDto<Guid>>
+            {
+                TotalCount = totalCount,
+                Items = ObjectMapper.Map<List<Lista>, List<LookupDto<Guid>>>(lookupData)
+            };
         }
 
         [Authorize(MaterialeShopPermissions.ListaItems.Delete)]
@@ -61,9 +86,13 @@ namespace MaterialeShop.ListaItems
         [Authorize(MaterialeShopPermissions.ListaItems.Create)]
         public virtual async Task<ListaItemDto> CreateAsync(ListaItemCreateDto input)
         {
+            if (input.ListaId == default)
+            {
+                throw new UserFriendlyException(L["The {0} field is required.", L["Lista"]]);
+            }
 
             var listaItem = await _listaItemManager.CreateAsync(
-            input.Descricao, input.Quantidade, input.UnidadeMedida
+            input.ListaId, input.Descricao, input.Quantidade, input.UnidadeMedida
             );
 
             return ObjectMapper.Map<ListaItem, ListaItemDto>(listaItem);
@@ -72,10 +101,14 @@ namespace MaterialeShop.ListaItems
         [Authorize(MaterialeShopPermissions.ListaItems.Edit)]
         public virtual async Task<ListaItemDto> UpdateAsync(Guid id, ListaItemUpdateDto input)
         {
+            if (input.ListaId == default)
+            {
+                throw new UserFriendlyException(L["The {0} field is required.", L["Lista"]]);
+            }
 
             var listaItem = await _listaItemManager.UpdateAsync(
             id,
-            input.Descricao, input.Quantidade, input.UnidadeMedida, input.ConcurrencyStamp
+            input.ListaId, input.Descricao, input.Quantidade, input.UnidadeMedida, input.ConcurrencyStamp
             );
 
             return ObjectMapper.Map<ListaItem, ListaItemDto>(listaItem);

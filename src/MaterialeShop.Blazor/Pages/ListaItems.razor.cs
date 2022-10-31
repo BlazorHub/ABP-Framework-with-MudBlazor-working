@@ -18,7 +18,7 @@ namespace MaterialeShop.Blazor.Pages
     {
         protected List<Volo.Abp.BlazoriseUI.BreadcrumbItem> BreadcrumbItems = new List<Volo.Abp.BlazoriseUI.BreadcrumbItem>();
         protected PageToolbar Toolbar {get;} = new PageToolbar();
-        private IReadOnlyList<ListaItemDto> ListaItemList { get; set; }
+        private IReadOnlyList<ListaItemWithNavigationPropertiesDto> ListaItemList { get; set; }
         private int PageSize { get; } = LimitedResultRequestDto.DefaultMaxResultCount;
         private int CurrentPage { get; set; } = 1;
         private string CurrentSorting { get; set; }
@@ -34,10 +34,11 @@ namespace MaterialeShop.Blazor.Pages
         private Modal CreateListaItemModal { get; set; }
         private Modal EditListaItemModal { get; set; }
         private GetListaItemsInput Filter { get; set; }
-        private DataGridEntityActionsColumn<ListaItemDto> EntityActionsColumn { get; set; }
+        private DataGridEntityActionsColumn<ListaItemWithNavigationPropertiesDto> EntityActionsColumn { get; set; }
         protected string SelectedCreateTab = "listaItem-create-tab";
         protected string SelectedEditTab = "listaItem-edit-tab";
-        
+        private IReadOnlyList<LookupDto<Guid>> Listas { get; set; } = new List<LookupDto<Guid>>();
+
         public ListaItems()
         {
             NewListaItem = new ListaItemCreateDto();
@@ -55,6 +56,9 @@ namespace MaterialeShop.Blazor.Pages
             await SetToolbarItemsAsync();
             await SetBreadcrumbItemsAsync();
             await SetPermissionsAsync();
+            await GetListaLookupAsync();
+
+
         }
 
         protected virtual ValueTask SetBreadcrumbItemsAsync()
@@ -110,7 +114,7 @@ namespace MaterialeShop.Blazor.Pages
             NavigationManager.NavigateTo($"{remoteService.BaseUrl.EnsureEndsWith('/')}api/app/lista-items/as-excel-file?DownloadToken={token}&FilterText={Filter.FilterText}", forceLoad: true);
         }
 
-        private async Task OnDataGridReadAsync(DataGridReadDataEventArgs<ListaItemDto> e)
+        private async Task OnDataGridReadAsync(DataGridReadDataEventArgs<ListaItemWithNavigationPropertiesDto> e)
         {
             CurrentSorting = e.Columns
                 .Where(c => c.SortDirection != SortDirection.Default)
@@ -125,7 +129,8 @@ namespace MaterialeShop.Blazor.Pages
         {
             NewListaItem = new ListaItemCreateDto{
                 
-                
+                ListaId = Listas.Select(i=>i.Id).FirstOrDefault(),
+
             };
             await NewListaItemValidations.ClearAll();
             await CreateListaItemModal.Show();
@@ -135,24 +140,25 @@ namespace MaterialeShop.Blazor.Pages
         {
             NewListaItem = new ListaItemCreateDto{
                 
-                
+                ListaId = Listas.Select(i=>i.Id).FirstOrDefault(),
+
             };
             await CreateListaItemModal.Hide();
         }
 
-        private async Task OpenEditListaItemModalAsync(ListaItemDto input)
+        private async Task OpenEditListaItemModalAsync(ListaItemWithNavigationPropertiesDto input)
         {
-            var listaItem = await ListaItemsAppService.GetAsync(input.Id);
+            var listaItem = await ListaItemsAppService.GetWithNavigationPropertiesAsync(input.ListaItem.Id);
             
-            EditingListaItemId = listaItem.Id;
-            EditingListaItem = ObjectMapper.Map<ListaItemDto, ListaItemUpdateDto>(listaItem);
+            EditingListaItemId = listaItem.ListaItem.Id;
+            EditingListaItem = ObjectMapper.Map<ListaItemDto, ListaItemUpdateDto>(listaItem.ListaItem);
             await EditingListaItemValidations.ClearAll();
             await EditListaItemModal.Show();
         }
 
-        private async Task DeleteListaItemAsync(ListaItemDto input)
+        private async Task DeleteListaItemAsync(ListaItemWithNavigationPropertiesDto input)
         {
-            await ListaItemsAppService.DeleteAsync(input.Id);
+            await ListaItemsAppService.DeleteAsync(input.ListaItem.Id);
             await GetListaItemsAsync();
         }
 
@@ -209,6 +215,13 @@ namespace MaterialeShop.Blazor.Pages
             SelectedEditTab = name;
         }
         
+
+        private async Task GetListaLookupAsync(string text = null)
+        {
+            var result = await ListaItemsAppService.GetListaLookupAsync(new LookupRequestDto { Filter = text });
+            Listas = result.Items.Select(i=> new LookupDto<Guid> { Id = i.Id, DisplayName = i.DisplayName}).ToList();
+        }
+
 
     }
 }
