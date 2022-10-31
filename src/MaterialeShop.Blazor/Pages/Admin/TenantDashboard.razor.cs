@@ -9,7 +9,7 @@ using Volo.Abp.Authorization.Permissions;
 using Volo.Abp.BlazoriseUI;
 using Volo.Abp.Timing;
 
-namespace MaterialeShop.Blazor.Pages;
+namespace MaterialeShop.Blazor.Pages.Admin;
 
 public partial class TenantDashboard
 {

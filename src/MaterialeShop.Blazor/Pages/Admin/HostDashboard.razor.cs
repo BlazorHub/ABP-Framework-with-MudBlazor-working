@@ -12,7 +12,7 @@ using Volo.Saas.Host;
 using Volo.Saas.Host.Blazor.Pages.Shared.Components.SaasEditionPercentageWidget;
 using Volo.Saas.Host.Blazor.Pages.Shared.Components.SaasLatestTenantsWidget;
 
-namespace MaterialeShop.Blazor.Pages;
+namespace MaterialeShop.Blazor.Pages.Admin;
 
 public partial class HostDashboard
 {
