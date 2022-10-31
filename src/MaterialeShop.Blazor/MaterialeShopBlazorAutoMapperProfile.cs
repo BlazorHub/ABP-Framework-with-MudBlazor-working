@@ -1,3 +1,4 @@
+using MaterialeShop.ListaItems;
 using Volo.Abp.AutoMapper;
 using MaterialeShop.Listas;
 using AutoMapper;
@@ -11,5 +12,7 @@ public class MaterialeShopBlazorAutoMapperProfile : Profile
         //Define your AutoMapper configuration here for the Blazor project.
 
         CreateMap<ListaDto, ListaUpdateDto>();
+
+        CreateMap<ListaItemDto, ListaItemUpdateDto>();
     }
 }

@@ -1,3 +1,4 @@
+using MaterialeShop.ListaItems;
 using System;
 using MaterialeShop.Shared;
 using Volo.Abp.AutoMapper;
@@ -16,5 +17,8 @@ public class MaterialeShopApplicationAutoMapperProfile : Profile
 
         CreateMap<Lista, ListaDto>();
         CreateMap<Lista, ListaExcelDto>();
+
+        CreateMap<ListaItem, ListaItemDto>();
+        CreateMap<ListaItem, ListaItemExcelDto>();
     }
 }

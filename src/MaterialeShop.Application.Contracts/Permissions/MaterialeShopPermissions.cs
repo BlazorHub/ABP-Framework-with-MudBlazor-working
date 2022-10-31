@@ -21,4 +21,12 @@ public static class MaterialeShopPermissions
         public const string Create = Default + ".Create";
         public const string Delete = Default + ".Delete";
     }
+
+    public static class ListaItems
+    {
+        public const string Default = GroupName + ".ListaItems";
+        public const string Edit = Default + ".Edit";
+        public const string Create = Default + ".Create";
+        public const string Delete = Default + ".Delete";
+    }
 }

@@ -4,6 +4,7 @@ using MaterialeShop.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Volo.Abp.EntityFrameworkCore;
 
@@ -12,9 +13,10 @@ using Volo.Abp.EntityFrameworkCore;
 namespace MaterialeShop.Migrations
 {
     [DbContext(typeof(MaterialeShopDbContext))]
-    partial class MaterialeShopDbContextModelSnapshot : ModelSnapshot
+    [Migration("20221031171455_Added_ListaItem")]
+    partial class Added_ListaItem
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

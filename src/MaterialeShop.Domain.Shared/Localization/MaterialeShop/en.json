@@ -44,6 +44,13 @@
     "ItemAlreadyAdded": "This item is already added.",
     "ExportToExcel": "Export to Excel",
     "Menu:Listas": "Listas",
-    "Menu:MaterialeShop": "Materiale Shop"
+    "Menu:MaterialeShop": "Materiale Shop",
+    "Permission:ListaItems": "Lista Items",
+    "Descricao": "Descricao",
+    "Quantidade": "Quantidade",
+    "UnidadeMedida": "Unidade Medida",
+    "ListaItems": "Lista Items",
+    "NewListaItem": "New Lista Item",
+    "Menu:ListaItems": "Lista Items"
   }
 }

@@ -1,3 +1,4 @@
+using MaterialeShop.ListaItems;
 using MaterialeShop.Listas;
 using System;
 using Microsoft.Extensions.DependencyInjection;
@@ -51,6 +52,8 @@ public class MaterialeShopEntityFrameworkCoreModule : AbpModule
              * default repositories only for aggregate roots */
             options.AddDefaultRepositories(includeAllEntities: true);
             options.AddRepository<Lista, Listas.EfCoreListaRepository>();
+
+            options.AddRepository<ListaItem, ListaItems.EfCoreListaItemRepository>();
 
         });
 

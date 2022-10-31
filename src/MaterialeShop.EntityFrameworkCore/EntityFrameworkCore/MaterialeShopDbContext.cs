@@ -1,3 +1,4 @@
+using MaterialeShop.ListaItems;
 using MaterialeShop.Listas;
 using Volo.Abp.EntityFrameworkCore.Modeling;
 using Microsoft.EntityFrameworkCore;
@@ -30,6 +31,7 @@ public class MaterialeShopDbContext :
     IIdentityProDbContext,
     ISaasDbContext
 {
+    public DbSet<ListaItem> ListaItems { get; set; }
     public DbSet<Lista> Listas { get; set; }
     /* Add DbSet properties for your Aggregate Roots / Entities here. */
 
@@ -101,6 +103,18 @@ public class MaterialeShopDbContext :
     b.ToTable(MaterialeShopConsts.DbTablePrefix + "Listas", MaterialeShopConsts.DbSchema);
     b.ConfigureByConvention();
     b.Property(x => x.Titulo).HasColumnName(nameof(Lista.Titulo)).IsRequired();
+});
+
+        }
+        if (builder.IsHostDatabase())
+        {
+            builder.Entity<ListaItem>(b =>
+{
+    b.ToTable(MaterialeShopConsts.DbTablePrefix + "ListaItems", MaterialeShopConsts.DbSchema);
+    b.ConfigureByConvention();
+    b.Property(x => x.Descricao).HasColumnName(nameof(ListaItem.Descricao)).IsRequired();
+    b.Property(x => x.Quantidade).HasColumnName(nameof(ListaItem.Quantidade));
+    b.Property(x => x.UnidadeMedida).HasColumnName(nameof(ListaItem.UnidadeMedida));
 });
 
         }

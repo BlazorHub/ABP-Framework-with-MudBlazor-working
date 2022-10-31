@@ -127,6 +127,15 @@ public class MaterialeShopMenuContributor : IMenuContributor
                 icon: "fa fa-list",
                 requiredPermissionName: MaterialeShopPermissions.Listas.Default)
         );
+
+        context.Menu.AddItem(
+            new ApplicationMenuItem(
+                MaterialeShopMenus.ListaItems,
+                l["Menu:ListaItems"],
+                url: "/lista-items",
+                icon: "fa fa-list",
+                requiredPermissionName: MaterialeShopPermissions.ListaItems.Default)
+        );
         return Task.CompletedTask;
     }
 

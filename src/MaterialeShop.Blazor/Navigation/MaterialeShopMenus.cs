@@ -10,4 +10,6 @@ public class MaterialeShopMenus
     public const string TenantDashboard = Prefix + ".TenantDashboard";
     public const string Listas = Prefix + ".Listas";
 
+    public const string ListaItems = Prefix + ".ListaItems";
+
 }

@@ -21,6 +21,11 @@ public class MaterialeShopPermissionDefinitionProvider : PermissionDefinitionPro
         listaPermission.AddChild(MaterialeShopPermissions.Listas.Create, L("Permission:Create"));
         listaPermission.AddChild(MaterialeShopPermissions.Listas.Edit, L("Permission:Edit"));
         listaPermission.AddChild(MaterialeShopPermissions.Listas.Delete, L("Permission:Delete"));
+
+        var listaItemPermission = myGroup.AddPermission(MaterialeShopPermissions.ListaItems.Default, L("Permission:ListaItems"));
+        listaItemPermission.AddChild(MaterialeShopPermissions.ListaItems.Create, L("Permission:Create"));
+        listaItemPermission.AddChild(MaterialeShopPermissions.ListaItems.Edit, L("Permission:Edit"));
+        listaItemPermission.AddChild(MaterialeShopPermissions.ListaItems.Delete, L("Permission:Delete"));
     }
 
     private static LocalizableString L(string name)
