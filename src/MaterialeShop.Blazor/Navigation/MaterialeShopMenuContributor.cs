@@ -1,4 +1,6 @@
-﻿using System;
+using System.Collections.Generic;
+using Microsoft.AspNetCore.Authorization;
+using System;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
 using MaterialeShop.Localization;
@@ -117,6 +119,14 @@ public class MaterialeShopMenuContributor : IMenuContributor
         //Administration->Settings
         administration.SetSubItemOrder(SettingManagementMenus.GroupName, 6);
 
+        context.Menu.AddItem(
+            new ApplicationMenuItem(
+                MaterialeShopMenus.Listas,
+                l["Menu:Listas"],
+                url: "/listas",
+                icon: "fa fa-list",
+                requiredPermissionName: MaterialeShopPermissions.Listas.Default)
+        );
         return Task.CompletedTask;
     }
 

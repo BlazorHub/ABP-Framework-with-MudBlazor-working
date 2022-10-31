@@ -16,6 +16,11 @@ public class MaterialeShopPermissionDefinitionProvider : PermissionDefinitionPro
 
         //Define your own permissions here. Example:
         //myGroup.AddPermission(MaterialeShopPermissions.MyPermission1, L("Permission:MyPermission1"));
+
+        var listaPermission = myGroup.AddPermission(MaterialeShopPermissions.Listas.Default, L("Permission:Listas"));
+        listaPermission.AddChild(MaterialeShopPermissions.Listas.Create, L("Permission:Create"));
+        listaPermission.AddChild(MaterialeShopPermissions.Listas.Edit, L("Permission:Edit"));
+        listaPermission.AddChild(MaterialeShopPermissions.Listas.Delete, L("Permission:Delete"));
     }
 
     private static LocalizableString L(string name)

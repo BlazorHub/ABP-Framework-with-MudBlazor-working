@@ -1,3 +1,5 @@
+using MaterialeShop.Listas;
+using Volo.Abp.EntityFrameworkCore.Modeling;
 using Microsoft.EntityFrameworkCore;
 using Volo.Abp.AuditLogging.EntityFrameworkCore;
 using Volo.Abp.BackgroundJobs.EntityFrameworkCore;
@@ -28,6 +30,7 @@ public class MaterialeShopDbContext :
     IIdentityProDbContext,
     ISaasDbContext
 {
+    public DbSet<Lista> Listas { get; set; }
     /* Add DbSet properties for your Aggregate Roots / Entities here. */
 
     #region Entities from the modules
@@ -91,5 +94,15 @@ public class MaterialeShopDbContext :
         //    b.ConfigureByConvention(); //auto configure for the base class props
         //    //...
         //});
+        if (builder.IsHostDatabase())
+        {
+            builder.Entity<Lista>(b =>
+{
+    b.ToTable(MaterialeShopConsts.DbTablePrefix + "Listas", MaterialeShopConsts.DbSchema);
+    b.ConfigureByConvention();
+    b.Property(x => x.Titulo).HasColumnName(nameof(Lista.Titulo)).IsRequired();
+});
+
+        }
     }
 }

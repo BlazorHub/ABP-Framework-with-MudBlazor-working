@@ -26,6 +26,24 @@
     "NewsletterInfo": "Get information about the latest happenings.",
     "NewsletterPreference_Default": "Default Newsletter",
     "NewsletterPrivacyAcceptMessage": "I accept the <a href='/privacy-policy'>Privacy Policy</a>.",
-    "ChangeLanguage": "Change language"
+    "ChangeLanguage": "Change language",
+    "Permission:Listas": "Listas",
+    "Permission:MaterialeShop": "Materiale Shop",
+    "Permission:Create": "Create",
+    "Permission:Edit": "Edit",
+    "Permission:Delete": "Delete",
+    "Titulo": "Titulo",
+    "Listas": "Listas",
+    "NewLista": "New Lista",
+    "Actions": "Actions",
+    "SuccessfullyDeleted": "Successfully deleted",
+    "DeleteConfirmationMessage": "Are you sure you want to delete this record?",
+    "Search": "Search",
+    "Pick": "Pick",
+    "SeeAdvancedFilters": "Advanced filters",
+    "ItemAlreadyAdded": "This item is already added.",
+    "ExportToExcel": "Export to Excel",
+    "Menu:Listas": "Listas",
+    "Menu:MaterialeShop": "Materiale Shop"
   }
 }
