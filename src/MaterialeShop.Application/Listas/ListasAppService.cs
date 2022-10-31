@@ -23,7 +23,7 @@ using MaterialeShop.Shared;
 namespace MaterialeShop.Listas
 {
     [RemoteService(IsEnabled = false)]
-    [Authorize(MaterialeShopPermissions.Listas.Default)]
+    [Authorize()]
     public class ListasAppService : ApplicationService, IListasAppService
     {
         private readonly IDistributedCache<ListaExcelDownloadTokenCacheItem, string> _excelDownloadTokenCache;

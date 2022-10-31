@@ -124,8 +124,9 @@ public class MaterialeShopMenuContributor : IMenuContributor
                 MaterialeShopMenus.Listas,
                 l["Menu:Listas"],
                 url: "/listas",
-                icon: "fa fa-list",
-                requiredPermissionName: MaterialeShopPermissions.Listas.Default)
+                icon: "fa fa-list"
+                // requiredPermissionName: MaterialeShopPermissions.Listas.Default
+                )
         );
 
         context.Menu.AddItem(
@@ -133,8 +134,9 @@ public class MaterialeShopMenuContributor : IMenuContributor
                 MaterialeShopMenus.ListaItems,
                 l["Menu:ListaItems"],
                 url: "/lista-items",
-                icon: "fa fa-list",
-                requiredPermissionName: MaterialeShopPermissions.ListaItems.Default)
+                icon: "fa fa-list"
+                // requiredPermissionName: MaterialeShopPermissions.ListaItems.Default
+                )
         );
 
         context.Menu.AddItem(
