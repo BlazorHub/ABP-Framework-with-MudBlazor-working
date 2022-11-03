@@ -1,0 +1,38 @@
+@page "/listas2"
+@attribute [Authorize()]
+@using MaterialeShop.Listas
+@using MaterialeShop.Localization
+@using MaterialeShop.Shared
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.Extensions.Localization
+@using Microsoft.AspNetCore.Components.Web
+@using Blazorise
+@using Blazorise.Components
+@using Blazorise.DataGrid
+@using Volo.Abp.BlazoriseUI
+@using Volo.Abp.BlazoriseUI.Components
+@using Volo.Abp.ObjectMapping
+@using Volo.Abp.AspNetCore.Components.Messages
+@using Volo.Abp.AspNetCore.Components.Web.Theming.Layout
+@using MaterialeShop.Permissions
+@using Microsoft.AspNetCore.Components
+@using Volo.Abp.AspNetCore.Components.Web
+@using Volo.Abp.Http.Client
+@inherits MaterialeShopComponentBase
+@inject IListasAppService ListasAppService
+@inject IUiMessageService UiMessageService
+@inject IRemoteServiceConfigurationProvider RemoteServiceConfigurationProvider
+@inject NavigationManager NavigationManager
+
+<h1>LISTAS 2</h1>
+
+<MudTable Items="ListaList" Hover="true" Breakpoint="MudBlazor.Breakpoint.Sm" Loading="@_loadingLista" LoadingProgressColor="MudBlazor.Color.Info">
+    <HeaderContent>
+        <MudTh>Título</MudTh>
+        <MudTh>Endereço</MudTh>
+    </HeaderContent>
+    <RowTemplate>
+        <MudTd DataLabel="Nr">@context.Lista.Titulo</MudTd>
+        <MudTd DataLabel="Nr">@context.Endereco.EnderecoCompleto</MudTd>
+    </RowTemplate>
+</MudTable>

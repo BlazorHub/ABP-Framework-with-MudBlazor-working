@@ -1,0 +1,67 @@
+@page "/listas3"
+@attribute [Authorize()]
+@using MaterialeShop.Listas
+@using MaterialeShop.Localization
+@using MaterialeShop.Shared
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.Extensions.Localization
+@using Microsoft.AspNetCore.Components.Web
+@using Blazorise
+@using Blazorise.Components
+@using Blazorise.DataGrid
+@using Volo.Abp.BlazoriseUI
+@using Volo.Abp.BlazoriseUI.Components
+@using Volo.Abp.ObjectMapping
+@using Volo.Abp.AspNetCore.Components.Messages
+@using Volo.Abp.AspNetCore.Components.Web.Theming.Layout
+@using MaterialeShop.Permissions
+@using Microsoft.AspNetCore.Components
+@using Volo.Abp.AspNetCore.Components.Web
+@using Volo.Abp.Http.Client
+@inherits MaterialeShopComponentBase
+@inject IListasAppService ListasAppService
+@inject IUiMessageService UiMessageService
+@inject IRemoteServiceConfigurationProvider RemoteServiceConfigurationProvider
+@inject NavigationManager NavigationManager
+
+<h1>LISTAS 3</h1>
+
+<p>table.SortLabel @table?.SortLabel</p>
+<p>sort_label: @sort_label</p>
+<p>sort_direction: @sort_direction</p>
+
+
+<MudTable 
+    ServerData="@(new Func<TableState, Task<TableData<ListaWithNavigationPropertiesDto>>>(ServerReload))" 
+    @ref="table"
+    AllowUnsorted="true"
+    Dense="true" Hover="true" >
+    <ToolBarContent>
+        <MudText Typo="Typo.h6">Lista de compras</MudText>
+        <MudSpacer />
+        <MudTextField T="string" ValueChanged="@(s=>OnSearch(s))" Placeholder="Search" Adornment="Adornment.Start"
+            AdornmentIcon="@Icons.Material.Filled.Search" IconSize="MudBlazor.Size.Medium" Class="mt-0"></MudTextField>
+    </ToolBarContent>
+    <HeaderContent>
+        <MudTh>
+            <MudTableSortLabel SortLabel="Lista.Titulo" T="ListaWithNavigationPropertiesDto">Título</MudTableSortLabel>
+        </MudTh>
+        <MudTh>
+            <MudTableSortLabel SortLabel="Endereco.EnderecoCompleto" T="ListaWithNavigationPropertiesDto">Endereco</MudTableSortLabel>
+        </MudTh>
+        
+    </HeaderContent>
+    <RowTemplate>
+        <MudTd DataLabel="Título">@context.Lista.Titulo</MudTd>
+        <MudTd DataLabel="Endereço">@context.Endereco.EnderecoCompleto</MudTd>
+    </RowTemplate>
+    <NoRecordsContent>
+        <MudText>No matching records found</MudText>
+    </NoRecordsContent>
+    <LoadingContent>
+        <MudText>Loading...</MudText>
+    </LoadingContent>
+    <PagerContent>
+        <MudTablePager />
+    </PagerContent>
+</MudTable>
