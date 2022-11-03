@@ -25,8 +25,23 @@
 @inject NavigationManager NavigationManager
 
 <h1>LISTAS 4</h1>
+<p>table.CurrentPage: @table?.CurrentPage</p>
+<p>table.RowsPerPage: @table?.RowsPerPage</p>
 
-<MudTable Items="@_listaList" Hover="true" SortLabel="Sort By">
+<MudTable 
+    Items="@_listaList"
+    @ref="table"
+    Hover="true"
+    SortLabel="Sort By">
+    <ToolBarContent>
+        <MudText Typo="Typo.h6">Lista de compras</MudText>
+        <MudSpacer />
+        <MudTextField 
+            T="string" 
+            ValueChanged="@(s=>OnSearch(s))" 
+            Placeholder="Search" Adornment="Adornment.Start"
+            AdornmentIcon="@Icons.Material.Filled.Search" IconSize="MudBlazor.Size.Medium" Class="mt-0"/>
+    </ToolBarContent>
     <HeaderContent>
         <MudTh>
             <MudTableSortLabel SortBy="new Func<ListaWithNavigationPropertiesDto, object>(x=>x.Lista.Titulo)">Título</MudTableSortLabel>
