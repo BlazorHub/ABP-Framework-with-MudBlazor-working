@@ -83,7 +83,7 @@ namespace MaterialeShop.ListaItems
             await _listaItemRepository.DeleteAsync(id);
         }
 
-        [Authorize(MaterialeShopPermissions.ListaItems.Create)]
+        [Authorize()]
         public virtual async Task<ListaItemDto> CreateAsync(ListaItemCreateDto input)
         {
             if (input.ListaId == default)

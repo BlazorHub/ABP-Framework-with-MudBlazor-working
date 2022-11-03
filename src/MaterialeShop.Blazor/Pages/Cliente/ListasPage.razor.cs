@@ -11,14 +11,17 @@ using Volo.Abp.AspNetCore.Components.Web.Theming.PageToolbars;
 using MaterialeShop.Listas;
 using MaterialeShop.Permissions;
 using MaterialeShop.Shared;
+using MudBlazor;
+using Microsoft.Extensions.Logging;
 
 namespace MaterialeShop.Blazor.Pages.Cliente;
 
-public partial class Listas
+public partial class ListasPage
 {
     protected List<Volo.Abp.BlazoriseUI.BreadcrumbItem> BreadcrumbItems = new List<Volo.Abp.BlazoriseUI.BreadcrumbItem>();
     protected PageToolbar Toolbar { get; } = new PageToolbar();
-    private IReadOnlyList<ListaWithNavigationPropertiesDto> ListaList { get; set; }
+    // private IReadOnlyList<ListaWithNavigationPropertiesDto> ListaList { get; set; }
+    private MudDataGrid<ListaWithNavigationPropertiesDto> _listaList;
     private int PageSize { get; } = LimitedResultRequestDto.DefaultMaxResultCount;
     private int CurrentPage { get; set; } = 1;
     private string CurrentSorting { get; set; }
@@ -38,8 +41,9 @@ public partial class Listas
     protected string SelectedCreateTab = "lista-create-tab";
     protected string SelectedEditTab = "lista-edit-tab";
     private IReadOnlyList<LookupDto<Guid?>> EnderecosNullable { get; set; } = new List<LookupDto<Guid?>>();
+    private readonly ILogger<ListasPage> _logger;
 
-    public Listas()
+    public ListasPage(ILogger<ListasPage> logger)
     {
         NewLista = new ListaCreateDto();
         EditingLista = new ListaUpdateDto();
@@ -49,6 +53,7 @@ public partial class Listas
             SkipCount = (CurrentPage - 1) * PageSize,
             Sorting = CurrentSorting
         };
+        this._logger = logger;
     }
 
     protected override async Task OnInitializedAsync()
@@ -59,6 +64,15 @@ public partial class Listas
         await GetNullableEnderecoLookupAsync();
 
 
+    }
+
+    private bool onParametersSet = false;
+    
+
+    protected override void OnParametersSet()
+    {
+        onParametersSet = true;
+        _logger.LogWarning("----onParametersSet true");
     }
 
     protected virtual ValueTask SetBreadcrumbItemsAsync()
@@ -74,7 +88,10 @@ public partial class Listas
         Toolbar.AddButton(L["NewLista"], async () =>
         {
             await OpenCreateListaModalAsync();
-        }, IconName.Add, requiredPolicyName: MaterialeShopPermissions.Listas.Create);
+        }, 
+        IconName.Add, 
+        requiredPolicyName: null //MaterialeShopPermissions.Listas.Create
+        );
 
         return ValueTask.CompletedTask;
     }
@@ -89,21 +106,21 @@ public partial class Listas
                         .IsGrantedAsync(MaterialeShopPermissions.Listas.Delete);
     }
 
-    private async Task GetListasAsync()
-    {
-        Filter.MaxResultCount = PageSize;
-        Filter.SkipCount = (CurrentPage - 1) * PageSize;
-        Filter.Sorting = CurrentSorting;
+    // private async Task GetListasAsync()
+    // {
+    //     Filter.MaxResultCount = PageSize;
+    //     Filter.SkipCount = (CurrentPage - 1) * PageSize;
+    //     Filter.Sorting = CurrentSorting;
 
-        var result = await ListasAppService.GetListAsync(Filter);
-        ListaList = result.Items;
-        TotalCount = (int)result.TotalCount;
-    }
+    //     var result = await ListasAppService.GetListAsync(Filter);
+    //     _listaList = result.Items;
+    //     TotalCount = (int)result.TotalCount;
+    // }
 
     protected virtual async Task SearchAsync()
     {
         CurrentPage = 1;
-        await GetListasAsync();
+        await _listaList.ReloadServerData();
         await InvokeAsync(StateHasChanged);
     }
 
@@ -114,23 +131,37 @@ public partial class Listas
         NavigationManager.NavigateTo($"{remoteService.BaseUrl.EnsureEndsWith('/')}api/app/listas/as-excel-file?DownloadToken={token}&FilterText={Filter.FilterText}", forceLoad: true);
     }
 
-    private async Task OnDataGridReadAsync(DataGridReadDataEventArgs<ListaWithNavigationPropertiesDto> e)
+    private async Task<GridData<ListaWithNavigationPropertiesDto>> LoadServerData(GridState<ListaWithNavigationPropertiesDto> state)
     {
-        CurrentSorting = e.Columns
-            .Where(c => c.SortDirection != SortDirection.Default)
-            .Select(c => c.Field + (c.SortDirection == SortDirection.Descending ? " DESC" : ""))
-            .JoinAsString(",");
-        CurrentPage = e.Page;
-        await GetListasAsync();
-        await InvokeAsync(StateHasChanged);
+        Filter.MaxResultCount = PageSize;
+        Filter.SkipCount = (CurrentPage - 1) * PageSize;
+        Filter.Sorting = CurrentSorting;
+
+        var result = await ListasAppService.GetListAsync(Filter);
+
+        return new()
+        {
+            Items = result.Items,
+            TotalItems = (int)result.TotalCount
+        };
     }
+
+
+    // private async Task OnDataGridReadAsync(DataGridReadDataEventArgs<ListaWithNavigationPropertiesDto> e)
+    // {
+    //     CurrentSorting = e.Columns
+    //         .Where(c => c.SortDirection != SortDirection.Default)
+    //         .Select(c => c.Field + (c.SortDirection == SortDirection.Descending ? " DESC" : ""))
+    //         .JoinAsString(",");
+    //     CurrentPage = e.Page;
+    // await GetListasAsync();
+    //     await InvokeAsync(StateHasChanged);
+    // }
 
     private async Task OpenCreateListaModalAsync()
     {
         NewLista = new ListaCreateDto
         {
-
-
         };
         await NewListaValidations.ClearAll();
         await CreateListaModal.Show();
@@ -140,8 +171,6 @@ public partial class Listas
     {
         NewLista = new ListaCreateDto
         {
-
-
         };
         await CreateListaModal.Hide();
     }
@@ -159,7 +188,7 @@ public partial class Listas
     private async Task DeleteListaAsync(ListaWithNavigationPropertiesDto input)
     {
         await ListasAppService.DeleteAsync(input.Lista.Id);
-        await GetListasAsync();
+        await _listaList.ReloadServerData();
     }
 
     private async Task CreateListaAsync()
@@ -172,7 +201,7 @@ public partial class Listas
             }
 
             await ListasAppService.CreateAsync(NewLista);
-            await GetListasAsync();
+            await _listaList.ReloadServerData();
             await CloseCreateListaModalAsync();
         }
         catch (Exception ex)
@@ -196,7 +225,7 @@ public partial class Listas
             }
 
             await ListasAppService.UpdateAsync(EditingListaId, EditingLista);
-            await GetListasAsync();
+            await _listaList.ReloadServerData();
             await EditListaModal.Hide();
         }
         catch (Exception ex)

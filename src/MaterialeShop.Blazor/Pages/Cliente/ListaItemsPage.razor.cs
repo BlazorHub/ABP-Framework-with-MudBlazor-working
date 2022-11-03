@@ -14,7 +14,7 @@ using MaterialeShop.Shared;
 
 namespace MaterialeShop.Blazor.Pages.Cliente;
 
-public partial class ListaItems
+public partial class ListaItemsPage
 {
     protected List<Volo.Abp.BlazoriseUI.BreadcrumbItem> BreadcrumbItems = new List<Volo.Abp.BlazoriseUI.BreadcrumbItem>();
     protected PageToolbar Toolbar { get; } = new PageToolbar();
@@ -39,7 +39,7 @@ public partial class ListaItems
     protected string SelectedEditTab = "listaItem-edit-tab";
     private IReadOnlyList<LookupDto<Guid>> Listas { get; set; } = new List<LookupDto<Guid>>();
 
-    public ListaItems()
+    public ListaItemsPage()
     {
         NewListaItem = new ListaItemCreateDto();
         EditingListaItem = new ListaItemUpdateDto();
@@ -74,7 +74,10 @@ public partial class ListaItems
         Toolbar.AddButton(L["NewListaItem"], async () =>
         {
             await OpenCreateListaItemModalAsync();
-        }, IconName.Add, requiredPolicyName: MaterialeShopPermissions.ListaItems.Create);
+        }, 
+        IconName.Add, 
+        requiredPolicyName: null //MaterialeShopPermissions.ListaItems.Create
+        );
 
         return ValueTask.CompletedTask;
     }

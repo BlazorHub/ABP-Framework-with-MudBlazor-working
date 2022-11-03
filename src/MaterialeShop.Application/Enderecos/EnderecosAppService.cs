@@ -21,7 +21,7 @@ using MaterialeShop.Shared;
 namespace MaterialeShop.Enderecos
 {
     [RemoteService(IsEnabled = false)]
-    [Authorize(MaterialeShopPermissions.Enderecos.Default)]
+    [Authorize()]
     public class EnderecosAppService : ApplicationService, IEnderecosAppService
     {
         private readonly IDistributedCache<EnderecoExcelDownloadTokenCacheItem, string> _excelDownloadTokenCache;
@@ -58,7 +58,7 @@ namespace MaterialeShop.Enderecos
             await _enderecoRepository.DeleteAsync(id);
         }
 
-        [Authorize(MaterialeShopPermissions.Enderecos.Create)]
+        [Authorize()]
         public virtual async Task<EnderecoDto> CreateAsync(EnderecoCreateDto input)
         {
 

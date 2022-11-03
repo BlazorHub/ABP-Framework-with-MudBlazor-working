@@ -144,8 +144,9 @@ public class MaterialeShopMenuContributor : IMenuContributor
                 MaterialeShopMenus.Enderecos,
                 l["Menu:Enderecos"],
                 url: "/enderecos",
-                icon: "fa fa-map-marker-alt",
-                requiredPermissionName: MaterialeShopPermissions.Enderecos.Default)
+                icon: "fa fa-map-marker-alt"
+                // requiredPermissionName: MaterialeShopPermissions.Enderecos.Default
+                )
         );
         return Task.CompletedTask;
     }

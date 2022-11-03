@@ -1,4 +1,5 @@
 @page "/"
+@page "/listas"
 @attribute [Authorize()]
 @using MaterialeShop.Listas
 @using MaterialeShop.Localization
@@ -36,12 +37,12 @@
             <Addons>
                 <Addon AddonType="AddonType.Body">
                     <TextEdit @bind-Text="@Filter.FilterText"
-                              Autofocus="true"
-                              Placeholder="@L["Search"]">
+                            Autofocus="true"
+                            Placeholder="@L["Search"]">
                     </TextEdit>
                 </Addon>
                 <Addon AddonType="AddonType.End">
-                    <SubmitButton Form="ListaSearchForm" Clicked="GetListasAsync">
+                    <SubmitButton Form="ListaSearchForm" Clicked="@( _ => _listaList.ReloadServerData())">
                         <Icon Name="IconName.Search" Class="me-1"></Icon>@L["Search"]
                     </SubmitButton>
                 </Addon>
@@ -51,15 +52,72 @@
 </Card>
 
 @* ************************* DATA GRID ************************* *@
-<Card>
+
+<MudDataGrid T="ListaWithNavigationPropertiesDto"
+            @ref="_listaList"
+            Elevation="8"
+            Hideable="true"
+            Striped="true"
+            ServerData="LoadServerData">
+<ToolBarContent>
+    <MudText Typo="Typo.h5">@L["Listas"]</MudText>
+    <MudSpacer />
+    <MudButton Color="MudBlazor.Color.Primary"
+            Variant="Variant.Outlined"
+            Disabled="!CanCreateLista"
+            OnClick="OpenCreateListaModalAsync">
+        @L["NewLista"]
+    </MudButton>
+</ToolBarContent>
+<Columns>
+    @* <MudBlazor.Column T="ListaWithNavigationPropertiesDto"
+                    Field="@nameof(ListaWithNavigationPropertiesDto.Lista.Id)"
+                    Hideable="false"
+                    Title="@L["Actions"]">
+        <CellTemplate>
+            @if (CanEditLista)
+            {
+                <MudIconButton Icon="fas fa-edit" 
+                            OnClick="@((e) => {OpenEditListaModalAsync(context.Item);})"
+                            Size="MudBlazor.Size.Small" />
+            }
+            @if (CanDeleteLista)
+            {   
+                <MudIconButton Icon="fas fa-trash" 
+                            OnClick="@(async (e) => {await DeleteListaAsync(context.Item);})"
+                            Size="MudBlazor.Size.Small" />
+            }
+        </CellTemplate>
+    </MudBlazor.Column> 
+    <MudBlazor.Column T="AuthorDto"
+                    Field="@nameof(AuthorDto.Name)"
+                    Hideable="false"
+                    Title="@L["Name"]" />
+    *@
+    @* @if(onParametersSet == true)
+    { *@
+        <MudBlazor.Column
+                        T="ListaWithNavigationPropertiesDto"
+                        Field="@nameof(ListaWithNavigationPropertiesDto.Lista.Titulo)"
+                        Hideable="false"
+                        Title="Titulo" />
+    @* } *@
+    @* <MudBlazor.Column 
+                    T="ListaWithNavigationPropertiesDto"
+                    Field="@nameof(ListaWithNavigationPropertiesDto.Endereco.EnderecoCompleto)"
+                    Title="Endereco completo"/> *@
+</Columns>
+</MudDataGrid>
+
+@* <Card>
     <CardBody>
         <DataGrid TItem="ListaWithNavigationPropertiesDto"
-                  Data="ListaList"
-                  ReadData="OnDataGridReadAsync"
-                  TotalItems="TotalCount"
-                  ShowPager="true"
-                  Responsive="true"
-                  PageSize="PageSize">
+                Data="ListaList"
+                ReadData="OnDataGridReadAsync"
+                TotalItems="TotalCount"
+                ShowPager="true"
+                Responsive="true"
+                PageSize="PageSize">
             <DataGridColumns>
                 <DataGridEntityActionsColumn TItem="ListaWithNavigationPropertiesDto" @ref="@EntityActionsColumn">
                     <DisplayTemplate>
@@ -90,7 +148,7 @@
             </DataGridColumns>
         </DataGrid>
     </CardBody>
-</Card>
+</Card> *@
 
 @* ************************* CREATE MODAL ************************* *@
 <Modal @ref="CreateListaModal" Closing="@CreateListaModal.CancelClosingModalWhenFocusLost">
@@ -105,7 +163,7 @@
                             Mode="ValidationMode.Auto"
                             Model="@NewLista"
                             ValidateOnLoad="false">
-                     
+                    
                     
                     <Validation>
                         <Field>
@@ -161,7 +219,6 @@
                             Mode="ValidationMode.Auto"
                             Model="@EditingLista"
                             ValidateOnLoad="false">
-                     
                     
                     <Validation>
                         <Field>

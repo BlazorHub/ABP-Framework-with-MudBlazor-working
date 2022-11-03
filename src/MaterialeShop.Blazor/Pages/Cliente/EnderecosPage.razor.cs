@@ -14,7 +14,7 @@ using MaterialeShop.Shared;
 
 namespace MaterialeShop.Blazor.Pages.Cliente;
 
-public partial class Enderecos
+public partial class EnderecosPage
 {
     protected List<Volo.Abp.BlazoriseUI.BreadcrumbItem> BreadcrumbItems = new List<Volo.Abp.BlazoriseUI.BreadcrumbItem>();
     protected PageToolbar Toolbar { get; } = new PageToolbar();
@@ -38,7 +38,7 @@ public partial class Enderecos
     protected string SelectedCreateTab = "endereco-create-tab";
     protected string SelectedEditTab = "endereco-edit-tab";
 
-    public Enderecos()
+    public EnderecosPage()
     {
         NewEndereco = new EnderecoCreateDto();
         EditingEndereco = new EnderecoUpdateDto();
@@ -70,7 +70,10 @@ public partial class Enderecos
         Toolbar.AddButton(L["NewEndereco"], async () =>
         {
             await OpenCreateEnderecoModalAsync();
-        }, IconName.Add, requiredPolicyName: MaterialeShopPermissions.Enderecos.Create);
+        }, 
+        IconName.Add, 
+        requiredPolicyName: null //MaterialeShopPermissions.Enderecos.Create
+        );
 
         return ValueTask.CompletedTask;
     }
